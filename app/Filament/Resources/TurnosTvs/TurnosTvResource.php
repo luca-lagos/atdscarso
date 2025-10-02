@@ -7,7 +7,7 @@ use App\Filament\Resources\TurnosTvs\Pages\EditTurnosTv;
 use App\Filament\Resources\TurnosTvs\Pages\ListTurnosTvs;
 use App\Filament\Resources\TurnosTvs\Schemas\TurnosTvForm;
 use App\Filament\Resources\TurnosTvs\Tables\TurnosTvsTable;
-use App\Models\TurnosTv;
+use App\Models\Turnos_tv;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 
 class TurnosTvResource extends Resource
 {
-    protected static ?string $model = TurnosTv::class;
+    protected static ?string $model = Turnos_tv::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

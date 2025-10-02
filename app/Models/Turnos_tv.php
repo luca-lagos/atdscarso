@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Guava\Calendar\Contracts\Eventable;
+use Guava\Calendar\ValueObjects\CalendarEvent;
 
-class Turnos_tv extends Model
+class Turnos_tv extends Model implements Eventable
 {
     protected $table = 'turnos_tv';
 
@@ -18,6 +20,12 @@ class Turnos_tv extends Model
         'observaciones',
     ];
 
+    protected $casts = [
+        'fecha_turno' => 'date',
+        'hora_inicio' => 'datetime:H:i',
+        'hora_fin' => 'datetime:H:i',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -26,6 +34,16 @@ class Turnos_tv extends Model
     public function inventario()
     {
         return $this->belongsTo(Inventario::class, 'inventario_id');
+    }
+
+    public function toCalendarEvent(): CalendarEvent
+    {
+        return CalendarEvent::make($this)
+            ->title(($this->inventario?->nombre_equipo ?? 'TV') . ' - ' . ($this->user?->nombre_completo ?? ''))
+            ->start($this->fecha_turno->toDateString() . ' ' . $this->hora_inicio->format('H:i'))
+            ->end($this->fecha_turno->toDateString() . ' ' . $this->hora_fin->format('H:i'));
+            // Opcional: ->backgroundColor('#2563eb')->textColor('#fff')
+            // Opcional: ->action('edit') para que el click abra editar directamente
     }
 
     public function isActivo()

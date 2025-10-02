@@ -7,7 +7,7 @@ use App\Filament\Resources\TurnosSalas\Pages\EditTurnosSala;
 use App\Filament\Resources\TurnosSalas\Pages\ListTurnosSalas;
 use App\Filament\Resources\TurnosSalas\Schemas\TurnosSalaForm;
 use App\Filament\Resources\TurnosSalas\Tables\TurnosSalasTable;
-use App\Models\TurnosSala;
+use App\Models\Turnos_sala;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 
 class TurnosSalaResource extends Resource
 {
-    protected static ?string $model = TurnosSala::class;
+    protected static ?string $model = Turnos_sala::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

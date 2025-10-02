@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TurnosSalas\Pages;
 
 use App\Filament\Resources\TurnosSalas\TurnosSalaResource;
+use App\Filament\Resources\TurnosSalas\Widgets\TurnosSalaCalendarWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -14,6 +15,13 @@ class ListTurnosSalas extends ListRecords
     {
         return [
             CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            TurnosSalaCalendarWidget::class,
         ];
     }
 }

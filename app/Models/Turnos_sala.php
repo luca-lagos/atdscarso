@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Guava\Calendar\Contracts\Eventable;
+use Guava\Calendar\ValueObjects\CalendarEvent;
 
-class Turnos_sala extends Model
+class Turnos_sala extends Model implements Eventable
 {
     protected $table = 'turnos_sala';
 
@@ -19,9 +21,23 @@ class Turnos_sala extends Model
         'observaciones',
     ];
 
+    protected $casts = [
+        'fecha_turno' => 'date',
+        'hora_inicio' => 'datetime:H:i',
+        'hora_fin' => 'datetime:H:i',
+    ];
+
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
+    }
+
+    public function toCalendarEvent(): CalendarEvent
+    {
+        return CalendarEvent::make($this)
+            ->title(($this->curso . ' ' . $this->division) . ' - ' . ($this->user?->nombre_completo ?? ''))
+            ->start($this->fecha_turno->toDateString() . ' ' . $this->hora_inicio->format('H:i'))
+            ->end($this->fecha_turno->toDateString() . ' ' . $this->hora_fin->format('H:i'));
     }
 
     public function isPermanente()
