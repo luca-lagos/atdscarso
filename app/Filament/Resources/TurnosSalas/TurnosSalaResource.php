@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Filament\Resources\TurnosSalas;
+
+use App\Filament\Resources\TurnosSalas\Pages\CreateTurnosSala;
+use App\Filament\Resources\TurnosSalas\Pages\EditTurnosSala;
+use App\Filament\Resources\TurnosSalas\Pages\ListTurnosSalas;
+use App\Filament\Resources\TurnosSalas\Schemas\TurnosSalaForm;
+use App\Filament\Resources\TurnosSalas\Tables\TurnosSalasTable;
+use App\Models\TurnosSala;
+use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+
+class TurnosSalaResource extends Resource
+{
+    protected static ?string $model = TurnosSala::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $recordTitleAttribute = 'Turnos de sala';
+
+    public static function form(Schema $schema): Schema
+    {
+        return TurnosSalaForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return TurnosSalasTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListTurnosSalas::route('/'),
+            'create' => CreateTurnosSala::route('/create'),
+            'edit' => EditTurnosSala::route('/{record}/edit'),
+        ];
+    }
+}
