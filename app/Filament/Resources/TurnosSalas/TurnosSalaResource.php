@@ -22,6 +22,10 @@ class TurnosSalaResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'Turnos de sala';
 
+    protected static ?string $navigationLabel = 'Turnos de sala';
+
+    protected static ?int $navigationSort = 4;
+
     public static function form(Schema $schema): Schema
     {
         return TurnosSalaForm::configure($schema);

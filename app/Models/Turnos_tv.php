@@ -102,7 +102,7 @@ class Turnos_tv extends Model implements Eventable
     }
 
     // App/Models/TurnosTv.php
-public function overlaps($fecha, $horaInicio, $horaFin)
+/*public function overlaps($fecha, $horaInicio, $horaFin)
 {
     return self::where('inventario_id', $this->inventario_id)
         ->where('fecha_turno', $fecha)
@@ -115,5 +115,5 @@ public function overlaps($fecha, $horaInicio, $horaFin)
               });
         })
         ->exists();
-}
+}*/
 }

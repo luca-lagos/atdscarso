@@ -9,7 +9,7 @@ use Guava\Calendar\ValueObjects\FetchInfo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class TurnosSalaCalendarWidget extends Widget
+class TurnosSalaCalendarWidget extends CalendarWidget
 {
     //protected string $view = 'filament.resources.turnos-salas.widgets.turnos-sala-calendar-widget';
 
