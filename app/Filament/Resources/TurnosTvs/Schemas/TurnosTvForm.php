@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\TurnosTvs\Schemas;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Schemas\Schema;
 
@@ -23,7 +25,37 @@ class TurnosTvForm
                 )
                 ->required()
                 ->searchable()
-                ->native(false),
+                ->native(false)
+                ->createOptionForm([
+                    TextInput::make('name')
+                        ->label('Nombre completo')
+                        ->maxLength(255)
+                        ->required(),
+                    TextInput::make('email')
+                        ->label('Correo electrónico')
+                        ->unique(ignoreRecord: true)
+                        ->email()
+                        ->required(),
+                    TextInput::make('password')
+                        ->password()
+                        ->revealable()
+                        ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
+                        ->dehydrated(fn($state) => filled($state))
+                        ->label('Contraseña')
+                        ->required(),
+                    Select::make('rol')
+                        ->options(['admin' => 'Admin', 'profesor' => 'Profesor'])
+                        ->default('profesor')
+                        ->label('Asignar rol')
+                        ->required(),
+                ])
+                ->createOptionAction(
+                    function(Action $action) {
+                        $action
+                            ->label('Crear profesor')
+                            ->modalWidth('md');
+                    }
+                ),
                 Select::make('inventario_id')
                     ->label('TV portátil')
                 ->relationship(

@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\TurnosSalas\Widgets\TurnosSalaCalendarWidget;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Resources\TurnosTvs\Widgets\TurnosTvCalendarWidget;
 use App\Filament\Widgets\CalendarsTabsWidget;
 use App\Filament\Widgets\StatsOverview;
@@ -60,6 +61,9 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+            ])
+            ->plugins([
+                FilamentShieldPlugin::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,
