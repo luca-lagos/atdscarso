@@ -47,4 +47,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function turnos_sala()
+    {
+        return $this->hasMany(Turnos_sala::class);
+    }
+
+    public function turnos_tv()
+    {
+        return $this->hasMany(Turnos_tv::class);
+    }
 }
