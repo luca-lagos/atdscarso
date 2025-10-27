@@ -1,0 +1,190 @@
+/* ===== FullCalendar x Filament — Paleta institucional ===== */
+/* Ámbito: Widgets de Filament (clase .fi-wi). Ajusta si lo usas en otra zona. */
+
+.fi-wi .fc {
+    /* Colores de la grilla y bordes (light) */
+    --fc-border-color: #e5e7eb; /* Borde de celdas */
+    --fc-page-bg-color: #ffffff;
+    --fc-neutral-bg-color: #ffffff;
+    --fc-neutral-text-color: #6b7280; /* números de días fuera de mes */
+    --fc-more-link-bg-color: transparent;
+
+    /* Botones (light) */
+    --fc-button-bg-color: #f3f4f6; /* gris claro por defecto */
+    --fc-button-border-color: #e5e7eb;
+    --fc-button-text-color: #111827;
+    --fc-button-hover-bg-color: #e5e7eb;
+    --fc-button-hover-border-color: #d1d5db;
+    --fc-button-active-bg-color: #e5e7eb;
+    --fc-button-active-border-color: #d1d5db;
+
+    /* Día actual (light) */
+    --fc-today-bg-color: rgba(46, 125, 50, 0.08); /* verde suave */
+}
+
+/* Título del widget */
+.fi-wi .fc .fc-toolbar-title {
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Cabecera de días (lun, mar, …) */
+.fi-wi .fc .fc-col-header,
+.fi-wi .fc .fc-col-header-cell-cushion {
+    color: #374151;
+    font-weight: 600;
+}
+
+/* Celdas de día (borde sutil) */
+.fi-wi .fc .fc-daygrid-day,
+.fi-wi .fc .fc-timegrid-slot,
+.fi-wi .fc .fc-scrollgrid {
+    border-color: var(--fc-border-color);
+}
+
+/* Día actual: fondo sutil y borde un poco más marcado */
+.fi-wi .fc-daygrid-day.fc-day-today,
+.fi-wi .fc-timegrid-col.fc-day-today {
+    background-color: var(--fc-today-bg-color);
+    position: relative;
+}
+.fi-wi .fc-daygrid-day.fc-day-today::after,
+.fi-wi .fc-timegrid-col.fc-day-today::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(46, 125, 50, 0.25); /* borde verde suave */
+    pointer-events: none;
+    border-radius: 4px;
+}
+
+/* Botones: redondeados y sin shadow */
+.fi-wi .fc .fc-button {
+    border-radius: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    box-shadow: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease,
+        color 0.15s ease;
+}
+
+/* Botón “Hoy” destacado (bordó) */
+.fi-wi .fc .fc-today-button {
+    background-color: #7b1e2b !important;
+    border-color: #6b1a26 !important;
+    color: #ffffff !important;
+}
+.fi-wi .fc .fc-today-button:hover {
+    background-color: #6b1a26 !important;
+    border-color: #5d1722 !important;
+}
+
+/* Botones de vista activos (Mes/Semana/Día/Lista) en verde */
+.fi-wi .fc .fc-button-group .fc-button.fc-button-active {
+    background-color: #2e7d32 !important;
+    border-color: #276c2b !important;
+    color: #ffffff !important;
+}
+
+/* Eventos: padding, borde redondeado, mejorar legibilidad */
+.fi-wi .fc .fc-event {
+    border-radius: 0.5rem;
+    padding: 0.15rem 0.35rem;
+    border-width: 1px;
+    line-height: 1.2;
+}
+
+/* Hover de evento: leve resaltado */
+.fi-wi .fc .fc-event:hover {
+    filter: brightness(0.95);
+}
+
+/* Etiqueta del evento (que no se corte tan agresivo) */
+.fi-wi .fc .fc-event-title,
+.fi-wi .fc .fc-event-time {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Texto de “más X” en día */
+.fi-wi .fc .fc-daygrid-more-link {
+    color: #7b1e2b;
+    font-weight: 600;
+}
+
+/* ====== Dark mode ====== */
+@media (prefers-color-scheme: dark) {
+    .fi-wi .fc {
+        --fc-border-color: #374151; /* gris oscuro */
+        --fc-page-bg-color: #0b1020; /* usa tu fondo dark del panel si difiere */
+        --fc-neutral-bg-color: #0b1020;
+        --fc-neutral-text-color: #9ca3af;
+
+        /* Botones (dark) por defecto en gris oscuro */
+        --fc-button-bg-color: #1f2937;
+        --fc-button-border-color: #374151;
+        --fc-button-text-color: #e5e7eb;
+        --fc-button-hover-bg-color: #111827;
+        --fc-button-hover-border-color: #4b5563;
+        --fc-button-active-bg-color: #111827;
+        --fc-button-active-border-color: #4b5563;
+
+        /* Día de hoy (dark) */
+        --fc-today-bg-color: rgba(46, 125, 50, 0.18);
+    }
+
+    .fi-wi .fc .fc-toolbar-title {
+        color: #e5e7eb;
+    }
+
+    .fi-wi .fc .fc-col-header,
+    .fi-wi .fc .fc-col-header-cell-cushion {
+        color: #d1d5db;
+    }
+
+    /* Botón “Hoy” en bordó (dark) */
+    .fi-wi .fc .fc-today-button {
+        background-color: #7b1e2b !important;
+        border-color: #6b1a26 !important;
+        color: #ffffff !important;
+    }
+    .fi-wi .fc .fc-today-button:hover {
+        background-color: #6b1a26 !important;
+        border-color: #5d1722 !important;
+    }
+
+    /* Botones activos (vistas) en verde (dark) */
+    .fi-wi .fc .fc-button-group .fc-button.fc-button-active {
+        background-color: #2e7d32 !important;
+        border-color: #276c2b !important;
+        color: #ffffff !important;
+    }
+
+    /* Día actual: borde visible en dark */
+    .fi-wi .fc-daygrid-day.fc-day-today::after,
+    .fi-wi .fc-timegrid-col.fc-day-today::after {
+        border-color: rgba(46, 125, 50, 0.55);
+    }
+
+    /* Eventos: mantener colores definidos por JS; solo ajustes de hover en dark */
+    .fi-wi .fc .fc-event:hover {
+        filter: brightness(1.05);
+    }
+
+    /* Más X link en dark */
+    .fi-wi .fc .fc-daygrid-more-link {
+        color: #93c5aa; /* verde más suave en dark */
+    }
+}
+
+/* ===== Accesibilidad: Focus visible en botones del calendario ===== */
+.fi-wi .fc .fc-button:focus-visible {
+    outline: 2px solid #7b1e2b;
+    outline-offset: 2px;
+}
+
+/* ===== Ajustes finos opcionales ===== */
+/* Bordes de celdas menos agresivos en vistas timeGrid */
+.fi-wi .fc .fc-timegrid-slot {
+    border-top-color: var(--fc-border-color);
+}

@@ -2,9 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Resources\TurnosSalas\Widgets\TurnosSalaCalendarWidget;
-use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
-use App\Filament\Resources\TurnosTvs\Widgets\TurnosTvCalendarWidget;
 use App\Filament\Widgets\CalendarsTabsWidget;
 use App\Filament\Widgets\StatsOverview;
 use Filament\Http\Middleware\Authenticate;
@@ -14,10 +11,11 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
-use Filament\Widgets\StatsOverviewWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -29,6 +27,12 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        // Registrar el CSS personalizado del panel
+        FilamentAsset::register([
+            Css::make('scarso-theme', resource_path('css/filament/theme.css')),
+            Css::make('calendar-theme', resource_path('css/filament/custom-calendar.css')), // ya lo tenés
+        ]);
+
         return $panel
             ->default()
             ->id('admin')
@@ -36,15 +40,21 @@ class AdminPanelProvider extends PanelProvider
             ->profile()
             ->login()
             ->brandName('Escuela Scarso')
+            // ->darkMode(true) // opcional: forzar dark; si no, respeta prefers-color-scheme
             ->colors([
                 'primary' => Color::hex('#7B1E2B'),
                 'success' => Color::hex('#2E7D32'),
                 'warning' => Color::hex('#B26A00'),
                 'danger'  => Color::hex('#C62828'),
             ])
-            /*->favicon(asset('images/favicon.svg'))
-            ->brandLogo(asset('images/logo.svg'))
-            ->brandLogoHeight('28px')*/
+            // Si igual querés inyectar por hook (no necesario con assets, lo dejo comentado)
+            // ->renderHook(
+            //     PanelsRenderHook::STYLES_AFTER,
+            //     fn(): string => ''
+            // )
+            //->favicon(asset('images/favicon.svg'))
+            //->brandLogo(asset('images/logo.svg'))
+            //->brandLogoHeight('28px')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -52,12 +62,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
-                StatsOverviewWidget::class,
-                CalendarsTabsWidget::class,
-                /*TurnosTvCalendarWidget::class,
-                TurnosSalaCalendarWidget::class,*/
+                //AccountWidget::class,
+                // StatsOverview base de Filament es simple; usamos uno custom abajo
+                // FilamentInfoWidget::class, // lo escondemos para limpiar el dashboard
+                StatsOverview::class,
+                //CalendarsTabsWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -69,9 +78,6 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-            ])
-            ->plugins([
-                FilamentShieldPlugin::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,

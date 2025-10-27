@@ -6,12 +6,14 @@ use App\Filament\Resources\Prestamos\Pages\CreatePrestamo;
 use App\Filament\Resources\Prestamos\Pages\EditPrestamo;
 use App\Filament\Resources\Prestamos\Pages\ListPrestamos;
 use App\Models\Prestamo;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
@@ -112,15 +114,22 @@ class PrestamosTable
                 // Filtro por profesor
                 SelectFilter::make('user_id')
                     ->label('Profesor')
-                    ->relationship('user', 'name', modifyQueryUsing: fn(Builder $q) => $q->where('rol', 'profesor'))
+                    ->options(
+                        User::query()
+                            ->where('rol', 'profesor')
+                            ->orderBy('name')
+                            ->pluck('name', 'id')
+                            ->toArray()
+                    )
+                    /*->relationship('user', 'name', modifyQueryUsing: fn(Builder $q) => $q->where('rol', 'profesor'))*/
                     ->searchable()
                     ->preload(),
 
                 // Rango de fechas de préstamo
                 Filter::make('rango_prestamo')
-                    ->form([
-                        \Filament\Forms\Components\DatePicker::make('desde')->label('Desde'),
-                        \Filament\Forms\Components\DatePicker::make('hasta')->label('Hasta'),
+                    ->schema([
+                        DatePicker::make('desde')->label('Desde')->native(false),
+                        DatePicker::make('hasta')->label('Hasta')->native(false),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
