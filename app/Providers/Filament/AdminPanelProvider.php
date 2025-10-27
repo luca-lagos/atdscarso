@@ -35,9 +35,16 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->profile()
             ->login()
+            ->brandName('Escuela Scarso')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::hex('#7B1E2B'),
+                'success' => Color::hex('#2E7D32'),
+                'warning' => Color::hex('#B26A00'),
+                'danger'  => Color::hex('#C62828'),
             ])
+            /*->favicon(asset('images/favicon.svg'))
+            ->brandLogo(asset('images/logo.svg'))
+            ->brandLogoHeight('28px')*/
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
