@@ -1,0 +1,142 @@
+/* ====== Widget Calendarios — CSS puro ====== */
+.scarso-cal-widget {
+    width: 100%;
+}
+
+/* Toolbar */
+.scarso-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Grupo de botones (tabs) */
+.scarso-btn-group {
+    display: inline-flex;
+    align-items: stretch;
+    border-radius: 10px;
+    border: 1px solid var(--scarso-border, #e5e7eb);
+    overflow: hidden;
+    background: var(--scarso-bg, #fff);
+}
+.scarso-btn-group .divider {
+    width: 1px;
+    background: var(--scarso-border, #e5e7eb);
+}
+.scarso-btn-group button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 600;
+    color: var(--scarso-fg, #1f2937);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.15s ease, color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+.scarso-btn-group button:hover {
+    background: var(--scarso-hover, #f3f4f6);
+}
+.scarso-btn-group button.active {
+    background: var(--scarso-primary, #7b1e2b);
+    color: #fff;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08) inset;
+}
+.scarso-btn-group button:focus-visible {
+    outline: 2px solid var(--scarso-primary, #7b1e2b);
+    outline-offset: 2px;
+}
+.scarso-btn-group .ico {
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Acciones a la derecha */
+.scarso-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.scarso-btn {
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    color: var(--scarso-fg, #1f2937);
+    background: var(--scarso-bg2, #f9fafb);
+    border: 1px solid var(--scarso-border, #e5e7eb);
+    transition: background-color 0.15s ease, color 0.15s ease,
+        border-color 0.15s ease;
+}
+.scarso-btn:hover {
+    background: var(--scarso-hover, #f3f4f6);
+}
+.scarso-btn .ico {
+    margin-right: 6px;
+}
+
+/* Card que contiene el calendario */
+.scarso-card {
+    margin-top: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--scarso-border, #e5e7eb);
+    background: var(--scarso-panel, #fff);
+    box-shadow: 0 6px 16px rgba(17, 24, 39, 0.06);
+    padding: 8px;
+}
+
+/* Layout “Ambos” */
+.scarso-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+@media (min-width: 900px) {
+    .scarso-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+.scarso-subtitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--scarso-muted, #4b5563);
+    margin: 4px 4px 8px;
+}
+
+/* Light theme variables por defecto */
+:root {
+    --scarso-primary: #7b1e2b;
+    --scarso-border: #e5e7eb;
+    --scarso-bg: #ffffff;
+    --scarso-bg2: #f9fafb;
+    --scarso-panel: #ffffff;
+    --scarso-hover: #f3f4f6;
+    --scarso-fg: #1f2937;
+    --scarso-muted: #4b5563;
+}
+
+/* Dark mode: hereda del esquema de Filament */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --scarso-border: #1f2740;
+        --scarso-bg: transparent;
+        --scarso-bg2: #121a2e;
+        --scarso-panel: #0e1326;
+        --scarso-hover: rgba(255, 255, 255, 0.06);
+        --scarso-fg: #e5e7eb;
+        --scarso-muted: #cbd5e1;
+    }
+    .scarso-card {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+}

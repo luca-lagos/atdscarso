@@ -1,38 +1,64 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-        <div x-data="{ tab: 'tv' }" class="space-y-4">
+        <div x-data="{
+            tab: localStorage.getItem('scarso_cal_tab') || 'tv',
+            setTab(v) { this.tab = v;
+                localStorage.setItem('scarso_cal_tab', v) }
+        }" x-cloak class="scarso-cal-widget">
 
-            <!-- Barra de Tabs -->
-            <div class="flex gap-4 border-b border-gray-200 dark:border-gray-700 mb-2.5">
-                <!-- Botón Turnos TV -->
-                <button type="button" class="px-4 py-2 text-sm font-medium rounded-t-md transition-colors p-4"
-                    x-bind:class="tab === 'tv'
-                        ?
-                        'bg-primary-600 text-white shadow-md' :
-                        'text-gray-600 dark:text-gray-300 hover:text-primary-500'"
-                    x-on:click="tab = 'tv'">
-                    📺 Turnos TV
-                </button>
+            <!-- Toolbar -->
+            <div class="scarso-toolbar">
+                <div class="scarso-btn-group" role="tablist" aria-label="Calendarios">
+                    <button type="button" :class="tab === 'tv' ? 'active' : ''" @click="setTab('tv')" role="tab"
+                        aria-selected="true" aria-controls="tab-tv">
+                        <span class="ico">📺</span>
+                        <span>Turnos TV</span>
+                    </button>
+                    <div class="divider" aria-hidden="true"></div>
+                    <button type="button" :class="tab === 'sala' ? 'active' : ''" @click="setTab('sala')"
+                        role="tab" aria-controls="tab-sala">
+                        <span class="ico">🖥️</span>
+                        <span>Turnos Sala</span>
+                    </button>
+                    <div class="divider" aria-hidden="true"></div>
+                    <button type="button" :class="tab === 'ambos' ? 'active' : ''" @click="setTab('ambos')"
+                        role="tab" aria-controls="tab-ambos">
+                        <span class="ico">▦</span>
+                        <span>Ambos</span>
+                    </button>
+                </div>
 
-                <!-- Botón Turnos Sala -->
-                <button type="button" class="px-4 py-2 text-sm font-medium rounded-t-md transition-colors"
-                    x-bind:class="tab === 'sala'
-                        ?
-                        'bg-primary-600 text-white shadow-md' :
-                        'text-gray-600 dark:text-gray-300 hover:text-primary-500'"
-                    x-on:click="tab = 'sala'">
-                    🖥️ Turnos Sala
-                </button>
+                <div class="scarso-actions">
+                    <a href="{{ \App\Filament\Resources\TurnosTvs\Pages\CreateTurnosTv::getUrl() }}" class="scarso-btn">
+                        <span class="ico">＋</span> Nuevo turno TV
+                    </a>
+                    <a href="{{ \App\Filament\Resources\TurnosSalas\Pages\CreateTurnosSala::getUrl() }}"
+                        class="scarso-btn">
+                        <span class="ico">＋</span> Nuevo turno Sala
+                    </a>
+                </div>
             </div>
 
-            <!-- Contenido de la pestaña TV -->
-            <div x-show="tab === 'tv'" class="w-full">
-                @livewire(\App\Filament\Resources\TurnosTvs\Widgets\TurnosTvCalendarWidget::class)
-            </div>
-
-            <!-- Contenido de la pestaña Sala -->
-            <div x-show="tab === 'sala'" class="w-full">
-                @livewire(\App\Filament\Resources\TurnosSalas\Widgets\TurnosSalaCalendarWidget::class)
+            <!-- Card calendario -->
+            <div class="scarso-card">
+                <div id="tab-tv" x-show="tab === 'tv'" x-transition.opacity.duration.120ms>
+                    @livewire(\App\Filament\Resources\TurnosTvs\Widgets\TurnosTvCalendarWidget::class, key('cal-tv'))
+                </div>
+                <div id="tab-sala" x-show="tab === 'sala'" x-transition.opacity.duration.120ms>
+                    @livewire(\App\Filament\Resources\TurnosSalas\Widgets\TurnosSalaCalendarWidget::class, key('cal-sala'))
+                </div>
+                <div id="tab-ambos" x-show="tab === 'ambos'" x-transition.opacity.duration.120ms>
+                    <div class="scarso-grid">
+                        <div class="scarso-grid-item">
+                            <div class="scarso-subtitle">Turnos TV</div>
+                            @livewire(\App\Filament\Resources\TurnosTvs\Widgets\TurnosTvCalendarWidget::class, key('cal-tv-dual'))
+                        </div>
+                        <div class="scarso-grid-item">
+                            <div class="scarso-subtitle">Turnos Sala</div>
+                            @livewire(\App\Filament\Resources\TurnosSalas\Widgets\TurnosSalaCalendarWidget::class, key('cal-sala-dual'))
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </x-filament::section>

@@ -112,6 +112,26 @@
     font-weight: 600;
 }
 
+/* Botonera del widget de calendarios */
+.fi-btn {
+    border: none;
+    background: #f9fafb; /* claro */
+    color: #111827;
+}
+.dark .fi-btn {
+    background: transparent;
+    color: #e5e7eb;
+}
+
+.fi-btn:hover {
+    background: #f3f4f6;
+}
+.dark .fi-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Quitar doble borde del group si usas fi-btn con borde propio (aquí no lo usamos) */
+
 /* ====== Dark mode ====== */
 @media (prefers-color-scheme: dark) {
     .fi-wi .fc {
