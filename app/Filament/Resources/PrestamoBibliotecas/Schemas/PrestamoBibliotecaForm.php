@@ -3,7 +3,13 @@
 namespace App\Filament\Resources\PrestamoBibliotecas\Schemas;
 
 use App\Models\InventarioBiblioteca;
+use App\Models\PrestamoBiblioteca;
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class PrestamoBibliotecaForm
@@ -14,7 +20,7 @@ class PrestamoBibliotecaForm
 
         return $schema
             ->components([
-                Forms\Components\Select::make('inventario_biblioteca_id')
+                Select::make('inventario_biblioteca_id')
                     ->label('Libro')
                     ->searchable()
                     ->preload()
@@ -24,31 +30,55 @@ class PrestamoBibliotecaForm
                     ->getOptionLabelFromRecordUsing(fn(InventarioBiblioteca $r) => "{$r->titulo} — {$r->autor}")
                     ->required()
                     ->reactive()
-                    ->helperText('Solo cree el préstamo si el libro está disponible.')
-                    ->rule('different:libro_no_disponible'), // visual: no bloquea, validamos abajo
-                Forms\Components\DatePicker::make('fecha_prestamo')
+                    ->rule(function () {
+                        return function (string $attribute, $value, \Closure $fail) {
+                            if (!$value) return;
+
+                            $ocupado = PrestamoBiblioteca::query()
+                                ->where('inventario_biblioteca_id', $value)
+                                ->whereIn('estado', ['activo', 'vencido'])
+                                ->whereNull('fecha_devolucion')
+                                ->exists();
+
+                            if ($ocupado) {
+                                $fail('Este libro ya tiene un préstamo activo o vencido sin devolución.');
+                            }
+                        };
+                    })
+                    ->createOptionForm([
+                        TextInput::make('titulo')->required()->maxLength(255),
+                        TextInput::make('autor')->required()->maxLength(255),
+                        TextInput::make('isbn')->label('ISBN')->maxLength(255),
+                        TextInput::make('editorial')->maxLength(255),
+                        TextInput::make('categoria')->maxLength(255),
+                        TextInput::make('idioma')->maxLength(255),
+                        TextInput::make('fecha_edicion')->numeric()->label('Año edición'),
+                        Textarea::make('descripcion')->rows(3),
+                    ])
+                    ->createOptionAction(function (Action $action) {
+                        return $action
+                            ->modalHeading('Nuevo libro')
+                            ->modalButton('Crear y seleccionar')
+                            ->mutateFormDataUsing(function (array $data) {
+                                // Sanitizar/normalizar si querés
+                                return $data;
+                            });
+                    })
+                    ->createOptionUsing(function (array $data) {
+                        // Crear y devolver el ID para que quede seleccionado
+                        return InventarioBiblioteca::create($data)->getKey();
+                    }),
+                DatePicker::make('fecha_prestamo')
                     ->default(now()->toDateString())
                     ->required(),
-                Forms\Components\DatePicker::make('fecha_vencimiento')
+
+                DatePicker::make('fecha_vencimiento')
                     ->default($defaultVenc)
                     ->required(),
-                Forms\Components\Textarea::make('observaciones')->rows(3)->columnSpanFull(),
-            ])->columns(2)
-            ->afterStateHydrated(function ($form) {
-                // nada especial
-            })
-            ->rules([
-                'inventario_biblioteca_id' => function ($attribute, $value, $fail) {
-                    if (!$value) return;
-                    $ocupado = \App\Models\PrestamoBiblioteca::query()
-                        ->where('inventario_biblioteca_id', $value)
-                        ->whereIn('estado', ['activo', 'vencido'])
-                        ->whereNull('fecha_devolucion')
-                        ->exists();
-                    if ($ocupado) {
-                        $fail('Este libro ya tiene un préstamo activo o vencido sin devolución.');
-                    }
-                },
-            ]);
+
+                Textarea::make('observaciones')
+                    ->rows(3)
+                    ->columnSpanFull(),
+            ])->columns(2);
     }
 }
