@@ -7,6 +7,7 @@ use App\Models\PrestamoBiblioteca;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -54,6 +55,12 @@ class PrestamoBibliotecaForm
                         TextInput::make('idioma')->maxLength(255),
                         TextInput::make('fecha_edicion')->numeric()->label('Año edición'),
                         Textarea::make('descripcion')->rows(3),
+                        FileUpload::make('portada_path')
+                            ->label('Portada')
+                            ->image()
+                            ->directory('portadas-libros')
+                            ->imageEditor()
+                            ->maxSize(2048),
                     ])
                     ->createOptionAction(function (Action $action) {
                         return $action

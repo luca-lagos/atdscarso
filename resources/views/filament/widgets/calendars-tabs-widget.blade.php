@@ -2,8 +2,10 @@
     <x-filament::section>
         <div x-data="{
             tab: localStorage.getItem('scarso_cal_tab') || 'tv',
-            setTab(v) { this.tab = v;
-                localStorage.setItem('scarso_cal_tab', v) }
+            setTab(v) {
+                this.tab = v;
+                localStorage.setItem('scarso_cal_tab', v)
+            }
         }" x-cloak class="scarso-cal-widget">
 
             <!-- Toolbar -->
@@ -50,11 +52,11 @@
                 <div id="tab-ambos" x-show="tab === 'ambos'" x-transition.opacity.duration.120ms>
                     <div class="scarso-grid">
                         <div class="scarso-grid-item">
-                            <div class="scarso-subtitle">Turnos TV</div>
+                            <div>Turnos TV</div>
                             @livewire(\App\Filament\Resources\TurnosTvs\Widgets\TurnosTvCalendarWidget::class, key('cal-tv-dual'))
                         </div>
                         <div class="scarso-grid-item">
-                            <div class="scarso-subtitle">Turnos Sala</div>
+                            <div>Turnos Sala</div>
                             @livewire(\App\Filament\Resources\TurnosSalas\Widgets\TurnosSalaCalendarWidget::class, key('cal-sala-dual'))
                         </div>
                     </div>

@@ -82,5 +82,9 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+        /*->assets([
+                FilamentAsset::makeCss('theme', 'resources/css/filament/theme.css')->version(filemtime(base_path('resources/css/filament/theme.css'))),
+                FilamentAsset::makeCss('custom-calendar', 'resources/css/filament/custom-calendar.css')->version(filemtime(base_path('resources/css/filament/custom-calendar.css'))),
+            ])*/
     }
 }
