@@ -21,7 +21,7 @@ class InventarioBibliotecaResource extends Resource
 {
     protected static ?string $model = InventarioBiblioteca::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
 
     protected static string|UnitEnum|null $navigationGroup = 'Biblioteca';
     protected static ?string $navigationLabel = 'Libros';

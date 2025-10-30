@@ -19,13 +19,13 @@ class TurnosSalaResource extends Resource
 {
     protected static ?string $model = Turnos_sala::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
 
     protected static string|UnitEnum|null $navigationGroup = 'Informática';
 
-    protected static ?string $recordTitleAttribute = 'Turnos de sala';
+    protected static ?string $recordTitleAttribute = 'Turnos Sala Informática';
 
-    protected static ?string $navigationLabel = 'Turnos de sala';
+    protected static ?string $navigationLabel = 'Turnos Sala Informática';
 
     protected static ?int $navigationSort = 4;
 

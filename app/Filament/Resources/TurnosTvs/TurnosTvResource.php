@@ -19,7 +19,7 @@ class TurnosTvResource extends Resource
 {
     protected static ?string $model = Turnos_tv::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTv;
 
     protected static string|UnitEnum|null $navigationGroup = 'Informática';
 

@@ -21,13 +21,13 @@ class InventarioResource extends Resource
 {
     protected static ?string $model = Inventario::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedComputerDesktop;
 
-    protected static ?string $recordTitleAttribute = 'Inventario';
+    protected static ?string $recordTitleAttribute = 'Equipos';
 
     protected static string|UnitEnum|null $navigationGroup = 'Informática';
 
-    protected static ?string $navigationLabel = 'Inventario';
+    protected static ?string $navigationLabel = 'Equipos';
 
     protected static ?string $modelLabel = 'Equipo';
 
