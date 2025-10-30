@@ -44,19 +44,21 @@
             <!-- Card calendario -->
             <div class="scarso-card">
                 <div id="tab-tv" x-show="tab === 'tv'" x-transition.opacity.duration.120ms>
+                    <div class="scarso-subtitle"></div>
                     @livewire(\App\Filament\Resources\TurnosTvs\Widgets\TurnosTvCalendarWidget::class, key('cal-tv'))
                 </div>
                 <div id="tab-sala" x-show="tab === 'sala'" x-transition.opacity.duration.120ms>
+                    <div class="scarso-subtitle"></div>
                     @livewire(\App\Filament\Resources\TurnosSalas\Widgets\TurnosSalaCalendarWidget::class, key('cal-sala'))
                 </div>
                 <div id="tab-ambos" x-show="tab === 'ambos'" x-transition.opacity.duration.120ms>
                     <div class="scarso-grid">
                         <div class="scarso-grid-item">
-                            <div>Turnos TV</div>
+                            <div class="scarso-subtitle"></div>
                             @livewire(\App\Filament\Resources\TurnosTvs\Widgets\TurnosTvCalendarWidget::class, key('cal-tv-dual'))
                         </div>
                         <div class="scarso-grid-item">
-                            <div>Turnos Sala</div>
+                            <div class="scarso-subtitle"></div>
                             @livewire(\App\Filament\Resources\TurnosSalas\Widgets\TurnosSalaCalendarWidget::class, key('cal-sala-dual'))
                         </div>
                     </div>

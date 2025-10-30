@@ -27,10 +27,14 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        // Registrar el CSS personalizado del panel
+        $themeUrl = asset('css/filament/theme.css');
+        $calUrl   = asset('css/filament/custom-calendar.css');
+        $v1 = @filemtime(public_path('css/filament/theme.css')) ?: time();
+        $v2 = @filemtime(public_path('css/filament/custom-calendar.css')) ?: time();
+
         FilamentAsset::register([
-            Css::make('scarso-theme', resource_path('css/filament/theme.css')),
-            Css::make('calendar-theme', resource_path('css/filament/custom-calendar.css')), // ya lo tenés
+            Css::make('scarso-theme', $themeUrl . '?v=' . $v1),
+            /*Css::make('calendar-theme', $calUrl . '?v=' . $v2),*/
         ]);
 
         return $panel
@@ -82,9 +86,5 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
-        /*->assets([
-                FilamentAsset::makeCss('theme', 'resources/css/filament/theme.css')->version(filemtime(base_path('resources/css/filament/theme.css'))),
-                FilamentAsset::makeCss('custom-calendar', 'resources/css/filament/custom-calendar.css')->version(filemtime(base_path('resources/css/filament/custom-calendar.css'))),
-            ])*/
     }
 }

@@ -3,7 +3,7 @@
 
 .fi-wi .fc {
     /* Colores de la grilla y bordes (light) */
-    --fc-border-color: rgba(0, 0, 0, 0.08); /* Borde de celdas */
+    --fc-border-color: transparent; /* Borde de celdas */
     --fc-page-bg-color: #ffffff;
     --fc-neutral-bg-color: #ffffff;
     --fc-neutral-text-color: #6b7280; /* números de días fuera de mes */
@@ -135,7 +135,7 @@
 /* ====== Dark mode ====== */
 @media (prefers-color-scheme: dark) {
     .fi-wi .fc {
-        --fc-border-color: rgba(255, 255, 255, 0.1); /* gris oscuro */
+        --fc-border-color: transparent; /* gris oscuro */
         --fc-page-bg-color: #0b1020; /* usa tu fondo dark del panel si difiere */
         --fc-neutral-bg-color: #0b1020;
         --fc-neutral-text-color: #9ca3af;

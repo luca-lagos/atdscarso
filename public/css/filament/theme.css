@@ -17,10 +17,9 @@
     display: inline-flex;
     align-items: stretch;
     border-radius: 10px;
-    border: 1px solid var(--scarso-border, #e5e7eb);
     overflow: hidden;
-    background: #f7f8fb; /* base clara */
-    border-color: rgba(0, 0, 0, 0.08);
+    background: var(--scarso-muted); /* base clara */
+    border: 1px solid rgba(0, 0, 0, 0.06);
 }
 .scarso-btn-group .divider {
     color: #1f2937; /* texto oscuro siempre */
@@ -29,13 +28,12 @@
 .scarso-btn-group button {
     appearance: none;
     border: 0;
-    background: rgba(0, 0, 0, 0.04);
     cursor: pointer;
     padding: 8px 12px;
     font-size: 14px;
     line-height: 1;
     font-weight: 600;
-    color: var(--scarso-fg, #000000);
+    color: var(--scarso-fg, #515151);
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -74,13 +72,13 @@
     font-weight: 600;
     border-radius: 10px;
     color: var(--scarso-fg, #1f2937);
-    background: var(--scarso-bg2, #f9fafb);
+    background: var(--scarso-primary, #f9fafb);
     border: 1px solid var(--scarso-border, #e5e7eb);
     transition: background-color 0.15s ease, color 0.15s ease,
         border-color 0.15s ease;
 }
 .scarso-btn:hover {
-    background: var(--scarso-hover, #f3f4f6);
+    background: var(--scarso-secondary, #f3f4f6);
 }
 .scarso-btn .ico {
     margin-right: 6px;
@@ -88,9 +86,7 @@
 
 /* Card que contiene el calendario */
 .scarso-card {
-    border: 1px solid rgba(0, 0, 0, 0.06); /* muy sutil en light */
-    background: var(--scarso-panel, #fff);
-    box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
+    /* muy sutil en light */
 }
 
 /* Layout “Ambos” */
@@ -105,44 +101,45 @@
     }
 }
 .scarso-subtitle {
-    display: none !important;
     font-size: 13px;
     font-weight: 600;
-    color: var(--scarso-muted, #4b5563);
-    margin: 4px 4px 8px;
+    color: transparent;
+    margin: 8px 8px 8px;
+    padding-top: 8px;
 }
 
 /* Light theme variables por defecto */
 :root {
-    --scarso-primary: #7b1e2b;
+    --scarso-primary: #d64758;
+    --scarso-secondary: #b94250;
     --scarso-border: #e5e7eb;
     --scarso-bg: #ffffff;
     --scarso-bg2: #f9fafb;
     --scarso-panel: #ffffff;
     --scarso-hover: #f3f4f6;
-    --scarso-fg: #1f2937;
+    --scarso-fg: #000000;
     --scarso-muted: #4b5563;
 }
 
 /* Dark mode: hereda del esquema de Filament */
 @media (prefers-color-scheme: dark) {
     :root {
-        --scarso-border: #1f2740;
+        --scarso-border: transparent;
         --scarso-bg: transparent;
         --scarso-bg2: #121a2e;
         --scarso-panel: #0e1326;
         --scarso-hover: rgba(255, 255, 255, 0.06);
         --scarso-fg: #e5e7eb;
-        --scarso-muted: #cbd5e1;
+        --scarso-muted: rgba(0, 0, 0, 0.6);
     }
 
     .scarso-btn-group {
-        background: rgba(255, 255, 255, 0.06);
-        border-color: rgba(255, 255, 255, 0.12);
+        background: var(--scarso-muted);
+        border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .scarso-btn-group button {
-        color: #e5e7eb;
+        color: #ffffff;
     }
 
     .scarso-btn-group button:hover {
@@ -156,8 +153,6 @@
     }
 
     .scarso-card {
-        border: 1px solid rgba(0, 0, 0, 0.06); /* muy sutil en light */
-        background: var(--scarso-panel, #fff);
-        box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
+        /* muy sutil en light */
     }
 }
