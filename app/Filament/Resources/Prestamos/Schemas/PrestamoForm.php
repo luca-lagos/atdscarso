@@ -40,46 +40,62 @@ class PrestamoForm
                                     ->required(),
 
                                 Select::make('user_id')
-                                    ->label('Profesor')
-                                    ->options(
-                                        User::query()
-                                            ->where('rol', 'profesor')
-                                            ->orderBy('name')
-                                            ->pluck('name', 'id')
-                                            ->toArray()
-                                    )
-                                    /*->relationship('user', 'nombre_completo', modifyQueryUsing: fn($q) => $q->where('rol', 'profesor'))*/
+                                    ->label('Usuario')
                                     ->searchable()
                                     ->preload()
-                                    ->native(false)
-                                    ->placeholder('Seleccionar profesor')
+                                    ->options(User::query()->orderBy('name')->pluck('name', 'id'))
                                     ->required()
+                                    ->helperText('Alumnos quedan Pendientes hasta confirmación; Docentes quedan Activos.')
                                     ->createOptionForm([
                                         TextInput::make('name')
-                                            ->label('Nombre completo')
-                                            ->maxLength(255)
-                                            ->required(),
+                                            ->label('Nombre y apellido')
+                                            ->required()
+                                            ->maxLength(255),
+
                                         TextInput::make('email')
-                                            ->label('Correo electrónico')
-                                            ->unique(ignoreRecord: true)
+                                            ->label('Email')
+                                            ->required()
                                             ->email()
-                                            ->required(),
+                                            ->unique(ignoreRecord: true),
+
                                         TextInput::make('password')
-                                            ->password()
-                                            ->revealable()
-                                            ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
-                                            ->dehydrated(fn($state) => filled($state))
                                             ->label('Contraseña')
-                                            ->required(),
+                                            ->password()
+                                            ->required()
+                                            ->minLength(6),
+
                                         Select::make('rol')
-                                            ->options(['admin' => 'Admin', 'profesor' => 'Profesor'])
-                                            ->default('profesor')
-                                            ->label('Asignar rol')
-                                            ->required(),
+                                            ->label('Rol')
+                                            ->options([
+                                                'profesor' => 'Profesor',
+                                                'alumno'   => 'Alumno',
+                                            ])
+                                            ->required()
+                                            ->native(false),
                                     ])
                                     ->createOptionAction(function (Action $action) {
-                                        $action->label('Crear profesor')->modalWidth('md');
-                                    }),
+                                        // Solo quienes pueden crear préstamos pueden usar esta acción.
+                                        $action->visible(fn() => auth()->user()?->can('create_prestamo_biblioteca') || auth()->user()?->can('create_prestamo_informatica'));
+                                        return $action
+                                            ->modalHeading('Crear usuario (Profesor/Alumno)')
+                                            ->modalWidth('md');
+                                    })
+                                    ->createOptionUsing(function (array $data): int {
+                                        // Seguridad: forzar rol permitido
+                                        $rol = in_array($data['rol'] ?? '', ['profesor', 'alumno'], true) ? $data['rol'] : 'alumno';
+
+                                        $user = User::create([
+                                            'name'     => $data['name'],
+                                            'email'    => $data['email'],
+                                            'password' => Hash::make($data['password']),
+                                        ]);
+
+                                        // Asignar rol
+                                        $user->assignRole($rol);
+
+                                        return $user->getKey();
+                                    })
+                                    ->getOptionLabelFromRecordUsing(fn(User $u) => "{$u->name} ({$u->email})"),
                             ]),
 
                         // Fila 2: Fechas (6/6 en md+)

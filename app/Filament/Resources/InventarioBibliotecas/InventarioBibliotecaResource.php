@@ -50,6 +50,24 @@ class InventarioBibliotecaResource extends Resource
         ];
     }
 
+    public function getPrestamosActivosCountAttribute(): int
+    {
+        return $this->prestamos()
+            ->whereIn('estado', ['pendiente', 'activo', 'vencido'])
+            ->whereNull('fecha_devolucion')
+            ->count();
+    }
+
+    public function getDisponiblesCountAttribute(): int
+    {
+        return max(0, (int) $this->cantidad - $this->prestamos_activos_count);
+    }
+
+    public function getDisponibleAttribute(): bool
+    {
+        return $this->disponibles_count > 0;
+    }
+
     public static function getPages(): array
     {
         return [

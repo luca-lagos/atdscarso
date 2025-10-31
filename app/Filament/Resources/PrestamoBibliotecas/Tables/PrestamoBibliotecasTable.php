@@ -23,6 +23,11 @@ class PrestamoBibliotecasTable
             ->columns([
                 TextColumn::make('libro.titulo')->label('Libro')->searchable()->wrap(),
                 TextColumn::make('libro.autor')->label('Autor')->searchable(),
+                TextColumn::make('user.name')
+                    ->label('Profesor')
+                    ->sortable()
+                    ->searchable()
+                    ->icon('heroicon-m-user-circle'),
                 BadgeColumn::make('estado')
                     ->colors([
                         'warning' => 'vencido',
@@ -47,8 +52,18 @@ class PrestamoBibliotecasTable
                     ->query(fn(Builder $q) => $q->whereDate('fecha_vencimiento', today())),
                 Filter::make('activos')
                     ->query(fn(Builder $q) => $q->where('estado', 'activo')),
+                Filter::make('pendientes')->query(fn($q) => $q->where('estado', 'pendiente'))
             ])
             ->recordActions([
+                Action::make('confirmar')
+                    ->label('Confirmar')
+                    ->icon('heroicon-m-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn($r) => $r->estado === 'pendiente' && auth()->user()->can('update_prestamo_biblioteca'))
+                    ->action(function (PrestamoBiblioteca $r) {
+                        $r->update(['estado' => 'activo']);
+                    }),
                 Action::make('devolver')
                     ->label('Devolver')
                     ->icon('heroicon-m-arrow-uturn-left')

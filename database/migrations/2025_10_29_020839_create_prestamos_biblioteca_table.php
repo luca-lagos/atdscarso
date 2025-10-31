@@ -14,6 +14,14 @@ return new class extends Migration
         Schema::create('prestamos_biblioteca', function (Blueprint $table) {
             $table->id();
             $table->foreignId('inventario_biblioteca_id')->constrained('inventario_biblioteca')->cascadeOnDelete();
+            if (!Schema::hasColumn('prestamos_biblioteca', 'user_id')) {
+                $table->foreignId('user_id')
+                    ->nullable()
+                    ->constrained('users')
+                    ->nullOnDelete()
+                    ->after('inventario_biblioteca_id');
+            }
+            $table->enum('estado', ['pendiente', 'activo', 'vencido', 'devuelto', 'perdido'])->default('pendiente')->change();
             $table->date('fecha_prestamo');
             $table->date('fecha_vencimiento')->index();
             $table->date('fecha_devolucion')->nullable();

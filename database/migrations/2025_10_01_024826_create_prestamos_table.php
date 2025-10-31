@@ -14,10 +14,16 @@ return new class extends Migration
         Schema::create('prestamos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('inventario_id')->constrained('inventario')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            if (!Schema::hasColumn('prestamos', 'user_id')) {
+                $table->foreignId('user_id')
+                    ->nullable()
+                    ->constrained('users')
+                    ->nullOnDelete()
+                    ->after('inventario_id');
+            }
             $table->date('fecha_prestamo');
             $table->date('fecha_devolucion')->nullable();
-            $table->enum('estado',['activo','cerrado','vencido'])->default('activo');
+            $table->enum('estado', ['activo', 'cerrado', 'vencido'])->default('activo');
             $table->text('observaciones')->nullable();
             $table->text('pdf_path')->nullable();
             $table->timestamps();

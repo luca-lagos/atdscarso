@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\PrestamoBibliotecas\Pages;
 
 use App\Filament\Resources\PrestamoBibliotecas\PrestamoBibliotecaResource;
+use App\Models\InventarioBiblioteca;
 use App\Models\PrestamoBiblioteca;
+use App\Models\User;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreatePrestamoBiblioteca extends CreateRecord
@@ -12,26 +14,41 @@ class CreatePrestamoBiblioteca extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // Si querés autocompletar fecha_prestamo si no viene
         $data['fecha_prestamo'] ??= now()->toDateString();
+
+        // Estado según rol del usuario
+        if (!empty($data['user_id'])) {
+            $user = User::find($data['user_id']);
+
+            if ($user?->hasRole('profesor')) {
+                $data['estado'] = 'activo';
+            } elseif ($user?->hasRole('alumno')) {
+                $data['estado'] = 'pendiente';
+            } else {
+                // por defecto, si no se reconoce, va pendiente
+                $data['estado'] = 'pendiente';
+            }
+        }
 
         return $data;
     }
 
     protected function beforeCreate(): void
     {
-        $libroId = $this->form->getState()['inventario_biblioteca_id'] ?? null;
+        $state = $this->form->getState();
+        $libroId = $state['inventario_biblioteca_id'] ?? null;
 
+        // Evitar sobreasignar más que la cantidad disponible
         if ($libroId) {
-            $ocupado = PrestamoBiblioteca::query()
-                ->where('inventario_biblioteca_id', $libroId)
-                ->whereIn('estado', ['activo', 'vencido'])
+            $libro = InventarioBiblioteca::find($libroId);
+            $activos = $libro?->prestamos()
+                ->whereIn('estado', ['pendiente', 'activo', 'vencido'])
                 ->whereNull('fecha_devolucion')
-                ->exists();
+                ->count() ?? 0;
 
-            if ($ocupado) {
+            if ($libro && $activos >= (int) $libro->cantidad) {
                 throw ValidationException::withMessages([
-                    'inventario_biblioteca_id' => 'Este libro ya tiene un préstamo activo o vencido sin devolución.',
+                    'inventario_biblioteca_id' => 'No hay ejemplares disponibles para préstamo.',
                 ]);
             }
         }

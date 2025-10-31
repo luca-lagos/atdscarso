@@ -37,11 +37,18 @@ class UserForm
                 Section::make('Roles y permisos')
                     ->description('Asignar roles y permisos al usuario.')
                     ->schema([
-                        Select::make('rol')
+                        /*Select::make('rol')
                             ->options(['admin' => 'Admin', 'profesor' => 'Profesor'])
                             ->default('profesor')
                             ->label('Asignar rol')
-                            ->required(),
+                            ->required(),*/
+                        Select::make('roles')
+                            ->label('Roles')
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->visible(fn() => auth()->user()?->hasRole('super-admin') || auth()->user()?->can('update_user'))
                     ]),
             ]);
     }

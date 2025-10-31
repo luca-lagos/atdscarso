@@ -27,6 +27,7 @@ class InventarioBibliotecasTable
                 TextColumn::make('isbn')->label('ISBN')->toggleable()->copyable(),
                 TextColumn::make('editorial')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('categoria')->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('cantidad')->label('Stock'),
                 IconColumn::make('disponible')
                     ->label('Disponible')
                     ->boolean()

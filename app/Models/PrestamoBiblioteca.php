@@ -14,6 +14,7 @@ class PrestamoBiblioteca extends Model
 
     protected $fillable = [
         'inventario_biblioteca_id',
+        'user_id',
         'fecha_prestamo',
         'fecha_vencimiento',
         'fecha_devolucion',
@@ -31,6 +32,11 @@ class PrestamoBiblioteca extends Model
     public function libro()
     {
         return $this->belongsTo(InventarioBiblioteca::class, 'inventario_biblioteca_id');
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function scopeActivos($q)

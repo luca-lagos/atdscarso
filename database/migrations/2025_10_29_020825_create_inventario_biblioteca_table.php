@@ -17,8 +17,11 @@ return new class extends Migration
             $table->string('isbn')->nullable()->index();
             $table->string('autor')->index();
             $table->string('editorial')->nullable();
+            $table->string('coleccion')->nullable();
+            $table->string('numero_edicion')->nullable();
             $table->string('categoria')->nullable();
             $table->string('idioma')->nullable();
+            $table->unsignedInteger('cantidad')->default(1);
             $table->date('fecha_edicion');
             $table->date('fecha_entrada');
             $table->string('procedencia')->nullable();

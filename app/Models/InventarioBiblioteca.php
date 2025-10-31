@@ -16,15 +16,17 @@ class InventarioBiblioteca extends Model
         'isbn',
         'autor',
         'editorial',
+        'coleccion',
+        'numero_edicion',
         'categoria',
         'idioma',
+        'cantidad',
         'fecha_edicion',
         'fecha_entrada',
         'procedencia',
         'descripcion',
         'portada_path',
     ];
-
     public function prestamos()
     {
         return $this->hasMany(PrestamoBiblioteca::class, 'inventario_biblioteca_id');
@@ -38,11 +40,21 @@ class InventarioBiblioteca extends Model
         });
     }
 
+    public function getPrestamosActivosCountAttribute(): int
+    {
+        return $this->prestamos()
+            ->whereIn('estado', ['pendiente', 'activo', 'vencido'])
+            ->whereNull('fecha_devolucion')
+            ->count();
+    }
+
+    public function getDisponiblesCountAttribute(): int
+    {
+        return max(0, (int) ($this->cantidad ?? 0) - $this->prestamos_activos_count);
+    }
+
     public function getDisponibleAttribute(): bool
     {
-        return !$this->prestamos()
-            ->whereIn('estado', ['activo', 'vencido'])
-            ->whereNull('fecha_devolucion')
-            ->exists();
+        return $this->disponibles_count > 0;
     }
 }
