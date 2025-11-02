@@ -38,7 +38,7 @@ class PrestamoBibliotecaForm
 
                             $ocupado = PrestamoBiblioteca::query()
                                 ->where('inventario_biblioteca_id', $value)
-                                ->whereIn('estado', ['activo', 'vencido'])
+                                ->whereIn('estado', ['pendiente', 'activo', 'vencido'])
                                 ->whereNull('fecha_devolucion')
                                 ->exists();
 

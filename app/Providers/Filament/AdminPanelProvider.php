@@ -5,6 +5,8 @@ namespace App\Providers\Filament;
 use App\Filament\Widgets\CalendarsTabsWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Widgets\StatsOverview;
+use App\Filament\Widgets\UltimosPrestamosBibliotecaWidget;
+use App\Filament\Widgets\UltimosPrestamosInformaticaWidget;
 use Filament\Forms\Components\FileUpload;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -43,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path('dashboard')
             ->profile()
             ->login()
             ->brandName('Escuela Scarso')
@@ -73,6 +75,8 @@ class AdminPanelProvider extends PanelProvider
                 // StatsOverview base de Filament es simple; usamos uno custom abajo
                 // FilamentInfoWidget::class, // lo escondemos para limpiar el dashboard
                 StatsOverview::class,
+                UltimosPrestamosInformaticaWidget::class,
+                UltimosPrestamosBibliotecaWidget::class,
                 //CalendarsTabsWidget::class,
             ])
             ->middleware([

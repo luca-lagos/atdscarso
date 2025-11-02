@@ -24,11 +24,13 @@ class PrestamoBibliotecasTable
                 TextColumn::make('libro.titulo')->label('Libro')->searchable()->wrap(),
                 TextColumn::make('libro.autor')->label('Autor')->searchable(),
                 TextColumn::make('user.name')
-                    ->label('Profesor')
+                    ->label('Usuario')
                     ->sortable()
                     ->searchable()
                     ->icon('heroicon-m-user-circle'),
-                BadgeColumn::make('estado')
+                TextColumn::make('estado')
+                    ->badge()
+                    ->label('Estado')
                     ->colors([
                         'warning' => 'vencido',
                         'success' => 'devuelto',

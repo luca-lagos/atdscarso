@@ -21,18 +21,18 @@ class InventarioBibliotecasTable
     {
         return $table
             ->columns([
-                ImageColumn::make('portada_path')->label('')->circular()->size(40),
+                ImageColumn::make('portada_path')->label('')->circular()->size(40)->disk(config('filesystems.default', 'public')),
                 TextColumn::make('titulo')->searchable()->wrap(),
                 TextColumn::make('autor')->searchable()->toggleable(),
                 TextColumn::make('isbn')->label('ISBN')->toggleable()->copyable(),
                 TextColumn::make('editorial')->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('categoria')->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('cantidad')->label('Stock'),
+                TextColumn::make('categoria')->badge()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('cantidad')->label('Stock')->alignCenter(),
                 IconColumn::make('disponible')
                     ->label('Disponible')
                     ->boolean()
                     ->getStateUsing(fn(InventarioBiblioteca $record) => $record->disponible),
-                TextColumn::make('created_at')->date('d/m/Y')->label('Alta'),
+                TextColumn::make('created_at')->date('d/m/Y')->label('Alta')->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Filter::make('solo_disponibles')
