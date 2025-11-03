@@ -77,7 +77,7 @@ class AdminPanelProvider extends PanelProvider
                 StatsOverview::class,
                 UltimosPrestamosInformaticaWidget::class,
                 UltimosPrestamosBibliotecaWidget::class,
-                //CalendarsTabsWidget::class,
+                CalendarsTabsWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

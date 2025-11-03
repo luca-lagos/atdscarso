@@ -16,7 +16,7 @@ class UltimosPrestamosBibliotecaWidget extends BaseWidget
 
     public static function canView(): bool
     {
-        // Solo quienes pueden ver préstamos de biblioteca
+        //Solo quienes pueden ver préstamos de biblioteca
         return auth()->user()?->can('view_any_prestamo_biblioteca') ?? false;
     }
 
@@ -25,13 +25,13 @@ class UltimosPrestamosBibliotecaWidget extends BaseWidget
         return $table
             ->query(
                 PrestamoBiblioteca::query()
-                    ->with(['libro:id,titulo,autor', 'usuario:id,name'])
+                    ->with(['inventario_informatica:id,titulo,autor', 'user:id,name'])
                     ->latest()
                     ->limit(10)
             )
             ->columns([
-                TextColumn::make('libro.titulo')->label('Libro')->wrap()->limit(30),
-                TextColumn::make('usuario.name')->label('Usuario')->limit(22),
+                TextColumn::make('inventario_biblioteca.titulo')->label('Libro')->wrap()->limit(30),
+                TextColumn::make('user.name')->label('Usuario')->limit(22),
                 TextColumn::make('fecha_prestamo')->label('Inicio')->date('d/m'),
                 TextColumn::make('fecha_vencimiento')->label('Vence')->date('d/m'),
                 TextColumn::make('estado')

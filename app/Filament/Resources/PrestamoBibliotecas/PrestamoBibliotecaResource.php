@@ -11,6 +11,7 @@ use App\Filament\Resources\PrestamoBibliotecas\Schemas\PrestamoBibliotecaInfolis
 use App\Filament\Resources\PrestamoBibliotecas\Tables\PrestamoBibliotecasTable;
 use App\Models\PrestamoBiblioteca;
 use BackedEnum;
+use Filament\Panel;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -27,6 +28,11 @@ class PrestamoBibliotecaResource extends Resource
     protected static ?string $navigationLabel = 'Préstamos';
     protected static ?int $navigationSort = 2;
     protected static ?string $modelLabel = 'Préstamo';
+
+    public static function getSlug(?Panel $panel = null): string
+    {
+        return 'prestamo_biblioteca';
+    }
 
     public static function form(Schema $schema): Schema
     {

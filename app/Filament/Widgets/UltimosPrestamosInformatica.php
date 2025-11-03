@@ -24,13 +24,13 @@ class UltimosPrestamosInformaticaWidget extends BaseWidget
         return $table
             ->query(
                 Prestamo::query()
-                    ->with(['equipo:id,nombre', 'usuario:id,name']) // ajusta relaciones
+                    ->with(['inventario:id,nombre', 'user:id,name']) // ajusta relaciones
                     ->latest()
                     ->limit(10)
             )
             ->columns([
-                TextColumn::make('equipo.nombre')->label('Equipo')->wrap()->limit(30),
-                TextColumn::make('usuario.name')->label('Usuario')->limit(22),
+                TextColumn::make('inventario.nombre')->label('Equipo')->wrap()->limit(30),
+                TextColumn::make('user.name')->label('Usuario')->limit(22),
                 TextColumn::make('fecha_prestamo')->label('Inicio')->date('d/m'),
                 TextColumn::make('fecha_vencimiento')->label('Vence')->date('d/m'),
                 TextColumn::make('estado')
