@@ -16,6 +16,31 @@ use Filament\Schemas\Schema;
 
 class PrestamoBibliotecaForm
 {
+    private static function categorias(): array
+    {
+        return [
+            'Administracion publica' => 'Administración pública',
+            'Ciencias Naturales' => 'Ciencias Naturales',
+            'Ciencias Sociales' => 'Ciencias Sociales',
+            'Comic' => 'Cómic',
+            'Dibujo' => 'Dibujo',
+            'Diccionario' => 'Diccionario',
+            'Educacion fisica' => 'Educación física',
+            'Enciclopedia' => 'Enciclopedia',
+            'Etica' => 'Ética',
+            'Fisica' => 'Física',
+            'Geografia' => 'Geografía',
+            'Historia' => 'Historia',
+            'Informatica' => 'Informática',
+            'Lengua' => 'Lengua',
+            'Matematica' => 'Matemática',
+            'Musica' => 'Música',
+            'Ocio' => 'Ocio',
+            'Pedagogia' => 'Pedagogía',
+            'Otros' => 'Otros',
+        ];
+    }
+
     public static function configure(Schema $schema): Schema
     {
         $defaultVenc = fn() => Carbon::today()->addDays(14)->toDateString();

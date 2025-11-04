@@ -126,7 +126,7 @@ class InventarioBibliotecaForm
                             ->placeholder('Resumen breve, notas, estado físico, etc.')
                             ->columnSpan(12),
                     ])
-                ])->columns(12),
+                ])->columnSpanFull(),
             ]);
     }
 }

@@ -14,57 +14,57 @@ class PrestamoBibliotecaPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:PrestamoBiblioteca');
+        return $authUser->can('view_any_prestamo_biblioteca');
     }
 
     public function view(AuthUser $authUser, PrestamoBiblioteca $prestamoBiblioteca): bool
     {
-        return $authUser->can('View:PrestamoBiblioteca');
+        return $authUser->can('view_prestamo_biblioteca');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:PrestamoBiblioteca');
+        return $authUser->can('create_prestamo_biblioteca');
     }
 
     public function update(AuthUser $authUser, PrestamoBiblioteca $prestamoBiblioteca): bool
     {
-        return $authUser->can('Update:PrestamoBiblioteca');
+        return $authUser->can('update_prestamo_biblioteca');
     }
 
     public function delete(AuthUser $authUser, PrestamoBiblioteca $prestamoBiblioteca): bool
     {
-        return $authUser->can('Delete:PrestamoBiblioteca');
+        return $authUser->can('delete_prestamo_biblioteca');
     }
 
     public function restore(AuthUser $authUser, PrestamoBiblioteca $prestamoBiblioteca): bool
     {
-        return $authUser->can('Restore:PrestamoBiblioteca');
+        return $authUser->can('restore_prestamo_biblioteca');
     }
 
     public function forceDelete(AuthUser $authUser, PrestamoBiblioteca $prestamoBiblioteca): bool
     {
-        return $authUser->can('ForceDelete:PrestamoBiblioteca');
+        return $authUser->can('force_delete_prestamo_biblioteca');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:PrestamoBiblioteca');
+        return $authUser->can('force_delete_any_prestamo_biblioteca');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('RestoreAny:PrestamoBiblioteca');
+        return $authUser->can('restore_any_prestamo_biblioteca');
     }
 
     public function replicate(AuthUser $authUser, PrestamoBiblioteca $prestamoBiblioteca): bool
     {
-        return $authUser->can('Replicate:PrestamoBiblioteca');
+        return $authUser->can('replicate_prestamo_biblioteca');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('Reorder:PrestamoBiblioteca');
+        return $authUser->can('reorder_prestamo_biblioteca');
     }
 
 }

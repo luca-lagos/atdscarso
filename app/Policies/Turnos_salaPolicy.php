@@ -14,57 +14,57 @@ class Turnos_salaPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:TurnosSala');
+        return $authUser->can('view_any_turnos_sala');
     }
 
     public function view(AuthUser $authUser, Turnos_sala $turnosSala): bool
     {
-        return $authUser->can('View:TurnosSala');
+        return $authUser->can('view_turnos_sala');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:TurnosSala');
+        return $authUser->can('create_turnos_sala');
     }
 
     public function update(AuthUser $authUser, Turnos_sala $turnosSala): bool
     {
-        return $authUser->can('Update:TurnosSala');
+        return $authUser->can('update_turnos_sala');
     }
 
     public function delete(AuthUser $authUser, Turnos_sala $turnosSala): bool
     {
-        return $authUser->can('Delete:TurnosSala');
+        return $authUser->can('delete_turnos_sala');
     }
 
     public function restore(AuthUser $authUser, Turnos_sala $turnosSala): bool
     {
-        return $authUser->can('Restore:TurnosSala');
+        return $authUser->can('restore_turnos_sala');
     }
 
     public function forceDelete(AuthUser $authUser, Turnos_sala $turnosSala): bool
     {
-        return $authUser->can('ForceDelete:TurnosSala');
+        return $authUser->can('force_delete_turnos_sala');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:TurnosSala');
+        return $authUser->can('force_delete_any_turnos_sala');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('RestoreAny:TurnosSala');
+        return $authUser->can('restore_any_turnos_sala');
     }
 
     public function replicate(AuthUser $authUser, Turnos_sala $turnosSala): bool
     {
-        return $authUser->can('Replicate:TurnosSala');
+        return $authUser->can('replicate_turnos_sala');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('Reorder:TurnosSala');
+        return $authUser->can('reorder_turnos_sala');
     }
 
 }

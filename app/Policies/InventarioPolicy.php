@@ -14,57 +14,57 @@ class InventarioPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Inventario');
+        return $authUser->can('view_any_inventario');
     }
 
     public function view(AuthUser $authUser, Inventario $inventario): bool
     {
-        return $authUser->can('View:Inventario');
+        return $authUser->can('view_inventario');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Inventario');
+        return $authUser->can('create_inventario');
     }
 
     public function update(AuthUser $authUser, Inventario $inventario): bool
     {
-        return $authUser->can('Update:Inventario');
+        return $authUser->can('update_inventario');
     }
 
     public function delete(AuthUser $authUser, Inventario $inventario): bool
     {
-        return $authUser->can('Delete:Inventario');
+        return $authUser->can('delete_inventario');
     }
 
     public function restore(AuthUser $authUser, Inventario $inventario): bool
     {
-        return $authUser->can('Restore:Inventario');
+        return $authUser->can('restore_inventario');
     }
 
     public function forceDelete(AuthUser $authUser, Inventario $inventario): bool
     {
-        return $authUser->can('ForceDelete:Inventario');
+        return $authUser->can('force_delete_inventario');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:Inventario');
+        return $authUser->can('force_delete_any_inventario');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('RestoreAny:Inventario');
+        return $authUser->can('restore_any_inventario');
     }
 
     public function replicate(AuthUser $authUser, Inventario $inventario): bool
     {
-        return $authUser->can('Replicate:Inventario');
+        return $authUser->can('replicate_inventario');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('Reorder:Inventario');
+        return $authUser->can('reorder_inventario');
     }
 
 }

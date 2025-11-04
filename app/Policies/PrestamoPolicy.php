@@ -14,57 +14,57 @@ class PrestamoPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Prestamo');
+        return $authUser->can('view_any_prestamo');
     }
 
     public function view(AuthUser $authUser, Prestamo $prestamo): bool
     {
-        return $authUser->can('View:Prestamo');
+        return $authUser->can('view_prestamo');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Prestamo');
+        return $authUser->can('create_prestamo');
     }
 
     public function update(AuthUser $authUser, Prestamo $prestamo): bool
     {
-        return $authUser->can('Update:Prestamo');
+        return $authUser->can('update_prestamo');
     }
 
     public function delete(AuthUser $authUser, Prestamo $prestamo): bool
     {
-        return $authUser->can('Delete:Prestamo');
+        return $authUser->can('delete_prestamo');
     }
 
     public function restore(AuthUser $authUser, Prestamo $prestamo): bool
     {
-        return $authUser->can('Restore:Prestamo');
+        return $authUser->can('restore_prestamo');
     }
 
     public function forceDelete(AuthUser $authUser, Prestamo $prestamo): bool
     {
-        return $authUser->can('ForceDelete:Prestamo');
+        return $authUser->can('force_delete_prestamo');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:Prestamo');
+        return $authUser->can('force_delete_any_prestamo');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('RestoreAny:Prestamo');
+        return $authUser->can('restore_any_prestamo');
     }
 
     public function replicate(AuthUser $authUser, Prestamo $prestamo): bool
     {
-        return $authUser->can('Replicate:Prestamo');
+        return $authUser->can('replicate_prestamo');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('Reorder:Prestamo');
+        return $authUser->can('reorder_prestamo');
     }
 
 }
