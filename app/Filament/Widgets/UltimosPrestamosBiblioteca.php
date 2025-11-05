@@ -2,7 +2,9 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\PrestamoBibliotecas\PrestamoBibliotecaResource;
 use App\Models\PrestamoBiblioteca;
+use Filament\Actions\Action;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -11,13 +13,13 @@ use Filament\Widgets\TableWidget as BaseWidget;
 class UltimosPrestamosBibliotecaWidget extends BaseWidget
 {
     protected static ?string $heading = 'Últimos préstamos (Biblioteca)';
-    protected static ?int $sort = 20; // orden en dashboard
+    protected static ?int $sort = 20;
     protected static string $color = 'primary';
 
     public static function canView(): bool
     {
-        //Solo quienes pueden ver préstamos de biblioteca
-        return auth()->user()?->can('view_any_prestamo_biblioteca') ?? false;
+        return auth()->user()?->hasRole('super-admin')
+            || (auth()->user()?->can('view_any_prestamos_biblioteca') ?? false);
     }
 
     public function table(Table $table): Table
@@ -25,15 +27,19 @@ class UltimosPrestamosBibliotecaWidget extends BaseWidget
         return $table
             ->query(
                 PrestamoBiblioteca::query()
-                    ->with(['inventario_informatica:id,titulo,autor', 'user:id,name'])
+                    ->with(['inventarioBiblioteca:id,titulo,autor', 'user:id,name'])
                     ->latest()
                     ->limit(10)
             )
             ->columns([
-                TextColumn::make('inventario_biblioteca.titulo')->label('Libro')->wrap()->limit(30),
-                TextColumn::make('user.name')->label('Usuario')->limit(22),
-                TextColumn::make('fecha_prestamo')->label('Inicio')->date('d/m'),
-                TextColumn::make('fecha_vencimiento')->label('Vence')->date('d/m'),
+                TextColumn::make('inventarioBiblioteca.titulo')->label('Libro')->wrap()->limit(30)
+                    ->sortable(),
+                TextColumn::make('user.name')->label('Usuario')->limit(22)
+                    ->sortable(),
+                TextColumn::make('fecha_prestamo')->label('Inicio')->date('d/m')
+                    ->sortable(),
+                TextColumn::make('fecha_vencimiento')->label('Vence')->date('d/m')
+                    ->sortable(),
                 TextColumn::make('estado')
                     ->badge()
                     ->colors([
@@ -42,7 +48,15 @@ class UltimosPrestamosBibliotecaWidget extends BaseWidget
                         'danger'  => 'perdido',
                         'primary' => 'activo',
                     ])
+                    ->sortable()
                     ->label('Estado'),
+            ])
+            ->headerActions([
+                Action::make('ver_todos')
+                    ->label('Ver todos')
+                    ->icon('heroicon-m-arrow-right')
+                    ->url(PrestamoBibliotecaResource::getUrl('index'))
+                    ->color('gray'),
             ])
             ->paginated(false)
             ->striped()

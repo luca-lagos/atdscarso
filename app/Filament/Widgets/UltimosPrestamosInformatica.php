@@ -2,7 +2,9 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Prestamo; // tu modelo de informática
+use App\Filament\Resources\Prestamos\PrestamoResource;
+use App\Models\Prestamo;
+use Filament\Actions\Action;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -16,7 +18,8 @@ class UltimosPrestamosInformaticaWidget extends BaseWidget
 
     public static function canView(): bool
     {
-        return auth()->user()?->can('view_any_prestamo') ?? false;
+        return auth()->user()?->hasRole('super-admin')
+            || (auth()->user()?->can('view_any_prestamos') ?? false);
     }
 
     public function table(Table $table): Table
@@ -24,17 +27,21 @@ class UltimosPrestamosInformaticaWidget extends BaseWidget
         return $table
             ->query(
                 Prestamo::query()
-                    ->with(['inventario:id,nombre', 'user:id,name']) // ajusta relaciones
+                    ->with(['inventario:id,nombre', 'user:id,name'])
                     ->latest()
                     ->limit(10)
             )
             ->columns([
-                TextColumn::make('inventario.nombre')->label('Equipo')->wrap()->limit(30),
-                TextColumn::make('user.name')->label('Usuario')->limit(22),
-                TextColumn::make('fecha_prestamo')->label('Inicio')->date('d/m'),
+                TextColumn::make('inventario.nombre')->label('Equipo')->wrap()->limit(30)
+                    ->sortable(),
+                TextColumn::make('user.name')->label('Usuario')->limit(22)
+                    ->sortable(),
+                TextColumn::make('fecha_prestamo')->label('Inicio')->date('d/m')
+                    ->sortable(),
                 TextColumn::make('fecha_vencimiento')->label('Vence')->date('d/m'),
                 TextColumn::make('estado')
                     ->badge()
+                    ->sortable()
                     ->colors([
                         'warning' => ['pendiente', 'vencido'],
                         'success' => 'devuelto',
@@ -42,6 +49,13 @@ class UltimosPrestamosInformaticaWidget extends BaseWidget
                         'primary' => 'activo',
                     ])
                     ->label('Estado'),
+            ])
+            ->headerActions([
+                Action::make('ver_todos')
+                    ->label('Ver todos')
+                    ->icon('heroicon-m-arrow-right')
+                    ->url(PrestamoResource::getUrl('index'))
+                    ->color('gray'),
             ])
             ->paginated(false)
             ->striped()

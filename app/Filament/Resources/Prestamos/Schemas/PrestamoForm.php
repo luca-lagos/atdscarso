@@ -126,7 +126,7 @@ class PrestamoForm
                                     ->label('Estado')
                                     ->options([
                                         'activo'   => 'Activo',
-                                        'cerrado'  => 'Cerrado',
+                                        'devuelto'  => 'Devuelto',
                                         'vencido'  => 'Vencido',
                                     ])
                                     ->default('activo')

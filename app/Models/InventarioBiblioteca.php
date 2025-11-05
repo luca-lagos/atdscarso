@@ -26,6 +26,8 @@ class InventarioBiblioteca extends Model
         'procedencia',
         'descripcion',
         'portada_path',
+        'estante',
+        'columna',
     ];
     public function prestamos()
     {

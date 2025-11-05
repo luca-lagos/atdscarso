@@ -23,7 +23,7 @@ return new class extends Migration
             }
             $table->date('fecha_prestamo');
             $table->date('fecha_devolucion')->nullable();
-            $table->enum('estado', ['activo', 'cerrado', 'vencido'])->default('activo');
+            $table->enum('estado', ['activo', 'devuelto', 'vencido'])->default('activo');
             $table->text('observaciones')->nullable();
             $table->text('pdf_path')->nullable();
             $table->timestamps();
