@@ -94,18 +94,34 @@ class PrestamoBibliotecasTable
                             ->success()
                             ->send();
                     }),
-                EditAction::make()->requiresConfirmation()->after(function () {
-                    Notification::make()
-                        ->title('Préstamo actualizado')
-                        ->success()
-                        ->send();
-                }),
-                DeleteAction::make()->requiresConfirmation()->after(function () {
-                    Notification::make()
-                        ->title('Préstamo eliminado')
-                        ->success()
-                        ->send();
-                }),
+                EditAction::make()
+                    ->label('Editar')
+                    ->tooltip('Editar préstamo')
+                    ->icon('heroicon-m-pencil-square')
+                    ->requiresConfirmation()->after(function () {
+                        Notification::make()
+                            ->title('Préstamo actualizado')
+                            ->success()
+                            ->send();
+                    }),
+                DeleteAction::make()
+                    ->label('Eliminar')
+                    ->tooltip('Eliminar préstamo')
+                    ->icon('heroicon-m-trash')
+                    ->requiresConfirmation()->after(function () {
+                        Notification::make()
+                            ->title('Préstamo eliminado')
+                            ->success()
+                            ->send();
+                    }),
+
+                Action::make('descargar_pdf')
+                    ->label('Comodato')
+                    ->tooltip('Descargar comprobante PDF')
+                    ->icon('heroicon-m-arrow-down-tray')
+                    ->url(fn(PrestamoBiblioteca $record) => $record->pdf_url)
+                    ->openUrlInNewTab()
+                    ->visible(fn(PrestamoBiblioteca $record) => $record->pdf_path && Storage::exists($record->pdf_path)),
             ])
             ->toolbarActions([
                 DeleteBulkAction::make()->requiresConfirmation()->after(function () {

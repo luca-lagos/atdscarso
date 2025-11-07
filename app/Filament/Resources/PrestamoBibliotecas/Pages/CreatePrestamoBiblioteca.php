@@ -6,6 +6,7 @@ use App\Filament\Resources\PrestamoBibliotecas\PrestamoBibliotecaResource;
 use App\Models\InventarioBiblioteca;
 use App\Models\PrestamoBiblioteca;
 use App\Models\User;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreatePrestamoBiblioteca extends CreateRecord
@@ -52,5 +53,27 @@ class CreatePrestamoBiblioteca extends CreateRecord
                 ]);
             }
         }
+    }
+
+    protected function afterCreate(): void
+    {
+        $prestamo = $this->record;
+
+        // Generamos PDF con una vista Blade
+        $pdf = Pdf::loadView('pdf.comodato-biblioteca', ['prestamo' => $prestamo]);
+
+        $filePath = "comodatos/biblioteca/comodato_{$prestamo->id}.pdf";
+
+        Storage::put($filePath, $pdf->output());
+
+        // Guardar la ruta en el registro
+        $prestamo->update([
+            'pdf_path' => $filePath,
+        ]);
+
+        Notification::make()
+            ->title('Préstamo registrado correctamente')
+            ->success()
+            ->send();
     }
 }

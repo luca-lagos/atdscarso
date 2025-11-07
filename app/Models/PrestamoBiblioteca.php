@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class PrestamoBiblioteca extends Model
 {
@@ -21,6 +22,7 @@ class PrestamoBiblioteca extends Model
         'estado',
         'renovaciones',
         'observaciones',
+        'pdf_path',
     ];
 
     protected $casts = [
@@ -42,6 +44,13 @@ class PrestamoBiblioteca extends Model
     public function scopeActivos($q)
     {
         return $q->where('estado', 'activo');
+    }
+
+    public function getPdfUrlAttribute()
+    {
+        return $this->pdf_path
+            ? Storage::url($this->pdf_path)
+            : null;
     }
 
     public function marcarDevuelto(?Carbon $fecha = null): void

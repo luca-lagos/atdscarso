@@ -15,8 +15,14 @@ class Prestamo extends Model
         'fecha_prestamo',
         'fecha_devolucion',
         'estado',
+        'renovaciones',
         'observaciones',
         'pdf_path',
+    ];
+
+    protected $casts = [
+        'fecha_prestamo' => 'date',
+        'fecha_devolucion' => 'date',
     ];
 
     public function inventario()
@@ -74,8 +80,8 @@ class Prestamo extends Model
 
     public function getPdfUrlAttribute()
     {
-        return $this->pdf_path 
-            ? Storage::url($this->pdf_path) 
+        return $this->pdf_path
+            ? Storage::url($this->pdf_path)
             : null;
     }
 }

@@ -6,6 +6,7 @@ use App\Filament\Resources\Prestamos\PrestamoResource;
 use App\Models\Inventario;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,7 +14,7 @@ class CreatePrestamo extends CreateRecord
 {
     protected static string $resource = PrestamoResource::class;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
+    /*protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['fecha_prestamo'] ??= now()->toDateString();
 
@@ -32,7 +33,7 @@ class CreatePrestamo extends CreateRecord
         }
 
         return $data;
-    }
+    }*/
 
     protected function beforeCreate(): void
     {
@@ -43,7 +44,7 @@ class CreatePrestamo extends CreateRecord
         if ($equipoId) {
             $equipo = Inventario::find($equipoId);
             $activos = $equipo?->prestamos()
-                ->whereIn('estado', ['pendiente', 'activo', 'vencido'])
+                ->whereIn('estado', ['activo', 'devuelto', 'vencido'])
                 ->whereNull('fecha_devolucion')
                 ->count() ?? 0;
 
@@ -60,9 +61,9 @@ class CreatePrestamo extends CreateRecord
         $prestamo = $this->record;
 
         // Generamos PDF con una vista Blade
-        $pdf = Pdf::loadView('pdf.comodato', ['prestamo' => $prestamo]);
+        $pdf = Pdf::loadView('pdf.comodato-informatica', ['prestamo' => $prestamo]);
 
-        $filePath = "comodatos/comodato_{$prestamo->id}.pdf";
+        $filePath = "comodatos/informatica/comodato_{$prestamo->id}.pdf";
 
         Storage::put($filePath, $pdf->output());
 
@@ -70,5 +71,10 @@ class CreatePrestamo extends CreateRecord
         $prestamo->update([
             'pdf_path' => $filePath,
         ]);
+
+        Notification::make()
+            ->title('Préstamo registrado correctamente')
+            ->success()
+            ->send();
     }
 }

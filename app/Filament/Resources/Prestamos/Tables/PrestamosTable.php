@@ -148,6 +148,20 @@ class PrestamosTable
                     }),
             ], layout: FiltersLayout::AboveContent)
             ->recordActions([
+                Action::make('devolver')
+                    ->label('Devolver')
+                    ->icon('heroicon-m-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn($r) => $r->estado === 'activo' && auth()->user()->can('update_prestamo'))
+                    ->action(function (Prestamo $r) {
+                        $r->update(['estado' => 'devuelto']);
+                        Notification::make()
+                            ->title('Devolución registrada')
+                            ->success()
+                            ->send();
+                    }),
+
                 EditAction::make()
                     ->label('Editar')
                     ->tooltip('Editar préstamo')

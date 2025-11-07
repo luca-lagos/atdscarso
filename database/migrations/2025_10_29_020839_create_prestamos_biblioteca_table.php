@@ -25,9 +25,9 @@ return new class extends Migration
             $table->date('fecha_prestamo');
             $table->date('fecha_vencimiento')->index();
             $table->date('fecha_devolucion')->nullable();
-            $table->enum('estado', ['activo', 'vencido', 'devuelto', 'perdido'])->default('activo')->index();
             $table->unsignedTinyInteger('renovaciones')->default(0);
             $table->text('observaciones')->nullable();
+            $table->text('pdf_path')->nullable();
             $table->timestamps();
         });
     }
