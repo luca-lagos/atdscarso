@@ -76,12 +76,22 @@ class InventarioForm
                             ->required()
                             ->native(false)
                             ->columnSpan(4),
+
+                        TextInput::make('cantidad')
+                            ->label('Cantidad')
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(999)
+                            ->default(1)
+                            ->required()
+                            ->helperText('Cantidad de unidades disponibles de este equipo.')
+                            ->columnSpan(4),
                     ]),
 
                 Section::make('Observaciones')
                     ->description('Notas internas, estado físico, accesorios, o advertencias.')
                     ->collapsible()
-                    ->collapsed() // por defecto plegado
+                    ->collapsed()
                     ->schema([
                         Textarea::make('observaciones')
                             ->label('Observaciones adicionales')

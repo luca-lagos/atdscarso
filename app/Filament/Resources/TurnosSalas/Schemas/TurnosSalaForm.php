@@ -121,7 +121,7 @@ class TurnosSalaForm
                                 ->label('Hasta')
                                 ->required()
                                 ->native(false)
-                                ->rule(fn(Closure $get) => function (string $attribute, $value, $fail) use ($get) {
+                                ->rule(fn($get) => function (string $attribute, $value, $fail) use ($get) {
                                     $inicio = $get('hora_inicio');
                                     if ($inicio && $value && $value <= $inicio) {
                                         $fail('La hora de fin debe ser posterior a la hora de inicio.');

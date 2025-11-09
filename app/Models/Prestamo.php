@@ -15,7 +15,6 @@ class Prestamo extends Model
         'fecha_prestamo',
         'fecha_devolucion',
         'estado',
-        'renovaciones',
         'observaciones',
         'pdf_path',
     ];

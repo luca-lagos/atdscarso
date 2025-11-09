@@ -153,7 +153,7 @@ class PrestamosTable
                     ->icon('heroicon-m-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->visible(fn($r) => $r->estado === 'activo' && auth()->user()->can('update_prestamo'))
+                    ->visible(fn(Prestamo $r) => $r->estado === 'activo' && auth()->user()->can('update_prestamo'))
                     ->action(function (Prestamo $r) {
                         $r->update(['estado' => 'devuelto']);
                         Notification::make()

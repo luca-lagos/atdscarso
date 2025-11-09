@@ -7,6 +7,7 @@ use App\Filament\Resources\TurnosSalas\Pages\EditTurnosSala;
 use App\Models\Turnos_sala;
 use Carbon\Carbon;
 use Guava\Calendar\Filament\CalendarWidget;
+use Guava\Calendar\ValueObjects\CalendarEvent;
 use Guava\Calendar\ValueObjects\FetchInfo;
 use Illuminate\Support\Collection;
 
@@ -26,6 +27,7 @@ class TurnosSalaCalendarWidget extends CalendarWidget
     {
         return [
             'locale' => 'es',
+            'timeZone' => 'local',  // ← Agregar esta línea
             'initialView' => 'dayGridMonth',
             'height' => 'auto',
             'headerToolbar' => [
@@ -57,8 +59,23 @@ class TurnosSalaCalendarWidget extends CalendarWidget
             ->get();
 
         return $turnos->map(function (Turnos_sala $t) {
-            $start = Carbon::parse($t->fecha_turno . ' ' . $t->hora_inicio);
-            $end   = Carbon::parse($t->fecha_turno . ' ' . $t->hora_fin);
+            // Asegurar que fecha_turno sea string en formato Y-m-d
+            $fechaStr = $t->fecha_turno instanceof Carbon
+                ? $t->fecha_turno->format('Y-m-d')
+                : $t->fecha_turno;
+
+            // Asegurar que las horas sean strings en formato H:i:s
+            $horaInicio = $t->hora_inicio instanceof Carbon
+                ? $t->hora_inicio->format('H:i:s')
+                : $t->hora_inicio;
+
+            $horaFin = $t->hora_fin instanceof Carbon
+                ? $t->hora_fin->format('H:i:s')
+                : $t->hora_fin;
+
+            // Crear las fechas completas en formato ISO
+            $start = $fechaStr . 'T' . substr($horaInicio, 0, 5) . ':00';
+            $end   = $fechaStr . 'T' . substr($horaFin, 0, 5) . ':00';
 
             $title = trim(($t->curso ? "{$t->curso} {$t->division}" : 'Sin curso') . ' · ' . ($t->user->name ?? 'Profesor'));
 
@@ -69,7 +86,21 @@ class TurnosSalaCalendarWidget extends CalendarWidget
                 default      => ['#475569', '#ffffff', '#334155'],
             };
 
-            return [
+            return CalendarEvent::make()
+                ->title($title)
+                ->start($start)
+                ->end($end)
+                ->allDay(false)
+                ->backgroundColor($bg)
+                ->textColor($text)
+                ->extendedProps([
+                    'model' => Turnos_sala::class,
+                    'key' => $t->getKey(),
+                    'tipo' => $t->tipo,
+                    'profesor' => $t->user->name ?? null,
+                ]);
+
+            /*return [
                 'id'    => (string) $t->getKey(),
                 'title' => $title,
                 'start' => $start->toIso8601String(),
@@ -83,8 +114,8 @@ class TurnosSalaCalendarWidget extends CalendarWidget
                     'tipo' => $t->tipo,
                     'profesor' => $t->user->nombre_completo ?? null,
                 ],
-            ];
-        })->all();
+            ];*/
+        });
     }
 
     // Seleccionar rango vacío: ir a Create con datos prellenados
@@ -102,11 +133,19 @@ class TurnosSalaCalendarWidget extends CalendarWidget
 
     protected function updateEventTiming(array $event): void
     {
-        $id = data_get($event, 'extendedProps.recordId') ?? data_get($event, 'id');
-        if (! $id) return;
+        // Guava Calendar ya resuelve el modelo automáticamente
+        // si usás 'model' y 'key' en extendedProps
+        $modelClass = data_get($event, 'extendedProps.model');
+        $key = data_get($event, 'extendedProps.key') ?? data_get($event, 'id');
 
-        $model = Turnos_sala::find($id);
-        if (! $model) return;
+        if (!$modelClass || !$key) {
+            return;
+        }
+
+        $model = $modelClass::find($key);
+        if (!$model) {
+            return;
+        }
 
         $start = Carbon::parse($event['start']);
         $end   = isset($event['end']) ? Carbon::parse($event['end']) : null;
@@ -119,6 +158,6 @@ class TurnosSalaCalendarWidget extends CalendarWidget
         }
 
         $model->save();
-        $this->dispatch('refreshCalendar'); // Guava refresca
+        $this->dispatch('refreshCalendar');
     }
 }

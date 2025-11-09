@@ -112,9 +112,23 @@ class TurnosSalasTable
                         DatePicker::make('hasta')->label('Hasta'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
+                        if (!empty($data['desde']) && !empty($data['hasta'])) {
+                            return $query->whereBetween('fecha_turno', [
+                                Carbon::parse($data['desde'])->startOfDay(),
+                                Carbon::parse($data['hasta'])->endOfDay(),
+                            ]);
+                        }
+
+                        // Si solo uno está presente, aplicar filtro individual
                         return $query
-                            ->when($data['desde'] ?? null, fn(Builder $q, $date) => $q->whereDate('fecha_turno', '>=', $date))
-                            ->when($data['hasta'] ?? null, fn(Builder $q, $date) => $q->whereDate('fecha_turno', '<=', $date));
+                            ->when(
+                                $data['desde'] ?? null,
+                                fn(Builder $q, $date) => $q->where('fecha_turno', '>=', Carbon::parse($date)->startOfDay())
+                            )
+                            ->when(
+                                $data['hasta'] ?? null,
+                                fn(Builder $q, $date) => $q->where('fecha_turno', '<=', Carbon::parse($date)->endOfDay())
+                            );
                     })
                     ->indicateUsing(function (array $data): array {
                         $chips = [];

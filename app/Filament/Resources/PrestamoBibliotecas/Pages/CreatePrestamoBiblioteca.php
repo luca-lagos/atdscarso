@@ -6,8 +6,10 @@ use App\Filament\Resources\PrestamoBibliotecas\PrestamoBibliotecaResource;
 use App\Models\InventarioBiblioteca;
 use App\Models\PrestamoBiblioteca;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Storage;
 
 class CreatePrestamoBiblioteca extends CreateRecord
 {

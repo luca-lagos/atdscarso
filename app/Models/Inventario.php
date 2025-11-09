@@ -15,6 +15,7 @@ class Inventario extends Model
         'modelo',
         'nro_serie',
         'estado',
+        'cantidad',
         'observaciones',
     ];
 

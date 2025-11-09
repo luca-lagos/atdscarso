@@ -15,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 
 class PrestamoBibliotecasTable
 {
@@ -24,7 +25,7 @@ class PrestamoBibliotecasTable
             ->columns([
                 TextColumn::make('libro.titulo')->label('Libro')->searchable()->sortable()->wrap(),
                 TextColumn::make('libro.autor')->label('Autor')->searchable()->sortable(),
-                TextColumn::make('user.name')
+                TextColumn::make('usuario.name')
                     ->label('Usuario')
                     ->sortable()
                     ->searchable()
@@ -63,7 +64,7 @@ class PrestamoBibliotecasTable
                     ->icon('heroicon-m-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->visible(fn($r) => $r->estado === 'pendiente' && auth()->user()->can('update_prestamo_biblioteca'))
+                    ->visible(fn(PrestamoBiblioteca $r) => $r->estado === 'pendiente' && auth()->user()->can('update_prestamo_biblioteca'))
                     ->action(function (PrestamoBiblioteca $r) {
                         $r->update(['estado' => 'activo']);
                         Notification::make()
@@ -119,7 +120,7 @@ class PrestamoBibliotecasTable
                     ->label('Comodato')
                     ->tooltip('Descargar comprobante PDF')
                     ->icon('heroicon-m-arrow-down-tray')
-                    ->url(fn(PrestamoBiblioteca $record) => $record->pdf_url)
+                    ->url(fn(PrestamoBiblioteca $record) => $record->pdf_url ? Storage::url($record->pdf_path) : null)
                     ->openUrlInNewTab()
                     ->visible(fn(PrestamoBiblioteca $record) => $record->pdf_path && Storage::exists($record->pdf_path)),
             ])

@@ -7,6 +7,7 @@ use App\Filament\Resources\TurnosTvs\Pages\EditTurnosTv;
 use App\Models\Turnos_tv;
 use Carbon\Carbon;
 use Guava\Calendar\Filament\CalendarWidget;
+use Guava\Calendar\ValueObjects\CalendarEvent;
 use Guava\Calendar\ValueObjects\FetchInfo;
 use Illuminate\Support\Collection;
 
@@ -24,6 +25,7 @@ class TurnosTvCalendarWidget extends CalendarWidget
     {
         return [
             'locale' => 'es',
+            'timeZone' => 'local',  // ← Agregar esta línea
             'initialView' => 'dayGridMonth',
             'height' => 'auto',
             'headerToolbar' => [
@@ -55,12 +57,26 @@ class TurnosTvCalendarWidget extends CalendarWidget
             ->get();
 
         return $turnos->map(function (Turnos_tv $t) {
-            $start = Carbon::parse($t->fecha_turno . ' ' . $t->hora_inicio);
-            $end   = Carbon::parse($t->fecha_turno . ' ' . $t->hora_fin);
+            // Asegurar que fecha_turno sea string en formato Y-m-d
+            $fechaStr = $t->fecha_turno instanceof Carbon
+                ? $t->fecha_turno->format('Y-m-d')
+                : $t->fecha_turno;
+
+            // Asegurar que las horas sean strings en formato H:i:s
+            $horaInicio = $t->hora_inicio instanceof Carbon
+                ? $t->hora_inicio->format('H:i:s')
+                : $t->hora_inicio;
+
+            $horaFin = $t->hora_fin instanceof Carbon
+                ? $t->hora_fin->format('H:i:s')
+                : $t->hora_fin;
+
+            // Crear las fechas completas en formato ISO
+            $start = $fechaStr . 'T' . substr($horaInicio, 0, 5) . ':00';
+            $end   = $fechaStr . 'T' . substr($horaFin, 0, 5) . ':00';
 
             $title = trim(($t->inventario->nombre_equipo ?? 'TV') . ' · ' . ($t->user->name ?? 'Profesor'));
 
-            // Colores por estado
             [$bg, $text, $border] = match ($t->estado) {
                 'activo'     => ['#7B1E2B', '#ffffff', '#6b1a26'],
                 'confirmado' => ['#2E7D32', '#ffffff', '#276c2b'],
@@ -69,23 +85,21 @@ class TurnosTvCalendarWidget extends CalendarWidget
                 default      => ['#64748B', '#ffffff', '#475569'],
             };
 
-            return [
-                'id'    => (string) $t->getKey(),
-                'title' => $title,
-                'start' => $start->toIso8601String(),
-                'end'   => $end->toIso8601String(),
-                'allDay' => false,
-                'backgroundColor' => $bg,
-                'borderColor' => $border,
-                'textColor' => $text,
-                'extendedProps' => [
-                    'recordId' => $t->getKey(),
+            return CalendarEvent::make()
+                ->title($title)
+                ->start($start)
+                ->end($end)
+                ->allDay(false)
+                ->backgroundColor($bg)
+                ->textColor($text)
+                ->extendedProps([
+                    'model' => Turnos_tv::class,
+                    'key' => $t->getKey(),
                     'estado'   => $t->estado,
-                    'profesor' => $t->user->nombre_completo ?? null,
+                    'profesor' => $t->user->name ?? null,
                     'tv'       => $t->inventario->nombre_equipo ?? null,
-                ],
-            ];
-        })->all();
+                ]);
+        });
     }
 
     protected function onSelect(array $selectInfo): ?string
@@ -102,11 +116,19 @@ class TurnosTvCalendarWidget extends CalendarWidget
 
     protected function updateEventTiming(array $event): void
     {
-        $id = data_get($event, 'extendedProps.recordId') ?? data_get($event, 'id');
-        if (! $id) return;
+        // Guava Calendar ya resuelve el modelo automáticamente
+        // si usás 'model' y 'key' en extendedProps
+        $modelClass = data_get($event, 'extendedProps.model');
+        $key = data_get($event, 'extendedProps.key') ?? data_get($event, 'id');
 
-        $model = Turnos_tv::find($id);
-        if (! $model) return;
+        if (!$modelClass || !$key) {
+            return;
+        }
+
+        $model = $modelClass::find($key);
+        if (!$model) {
+            return;
+        }
 
         $start = Carbon::parse($event['start']);
         $end   = isset($event['end']) ? Carbon::parse($event['end']) : null;

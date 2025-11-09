@@ -106,6 +106,11 @@ class InventariosTable
                     })
                     ->sortable(),
 
+                TextColumn::make('cantidad')
+                    ->label('Stock')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('updated_at')
                     ->label('Actualizado')
                     ->since() // “hace 3 días”

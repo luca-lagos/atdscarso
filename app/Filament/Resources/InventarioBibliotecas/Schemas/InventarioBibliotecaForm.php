@@ -54,6 +54,7 @@ class InventarioBibliotecaForm
                                 ->imagePreviewHeight('260')
                                 ->panelAspectRatio('3:4')
                                 ->panelLayout('integrated')
+                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->helperText('Formatos: JPG/PNG/WebP.')
                                 ->columnSpan([
                                     'default' => 12,

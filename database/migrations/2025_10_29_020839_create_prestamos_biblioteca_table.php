@@ -27,7 +27,6 @@ return new class extends Migration
             $table->date('fecha_devolucion')->nullable();
             $table->unsignedTinyInteger('renovaciones')->default(0);
             $table->text('observaciones')->nullable();
-            $table->text('pdf_path')->nullable();
             $table->timestamps();
         });
     }

@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Schemas\Schema;
 use Closure;
+use HusamTariq\FilamentTimePicker\Forms\Components\TimePickerField;
 
 class TurnosTvForm
 {
@@ -100,16 +101,23 @@ class TurnosTvForm
                             'default' => 1,
                             'md' => 2,
                         ])->schema([
-                            TimePicker::make('hora_inicio')
+                            /*TimePicker::make('hora_inicio')
                                 ->label('Desde')
                                 ->required()
-                                ->native(false),
+                                ->native(false),*/
 
-                            TimePicker::make('hora_fin')
+                            TimePickerField::make('hora_inicio')
+                                ->label('Desde')
+                                ->required()
+                                ->okLabel('Confirmar')
+                                ->cancelLabel('Cancelar'),
+
+                            TimePickerField::make('hora_fin')
                                 ->label('Hasta')
                                 ->required()
-                                ->native(false)
-                                ->rule(fn(Closure $get) => function (string $attribute, $value, $fail) use ($get) {
+                                ->okLabel('Confirmar')
+                                ->cancelLabel('Cancelar')
+                                ->rule(fn($get) => function (string $attribute, $value, $fail) use ($get) {
                                     $inicio = $get('hora_inicio');
                                     if ($inicio && $value && $value <= $inicio) {
                                         $fail('La hora de fin debe ser posterior a la hora de inicio.');

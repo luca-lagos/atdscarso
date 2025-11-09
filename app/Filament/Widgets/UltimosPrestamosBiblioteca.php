@@ -27,14 +27,14 @@ class UltimosPrestamosBibliotecaWidget extends BaseWidget
         return $table
             ->query(
                 PrestamoBiblioteca::query()
-                    ->with(['inventarioBiblioteca:id,titulo,autor', 'user:id,name'])
+                    ->with(['libro:id,titulo,autor', 'usuario:id,name'])
                     ->latest()
                     ->limit(10)
             )
             ->columns([
-                TextColumn::make('inventarioBiblioteca.titulo')->label('Libro')->wrap()->limit(30)
+                TextColumn::make('libro.titulo')->label('Libro')->wrap()->limit(30)
                     ->sortable(),
-                TextColumn::make('user.name')->label('Usuario')->limit(22)
+                TextColumn::make('usuario.name')->label('Usuario')->limit(22)
                     ->sortable(),
                 TextColumn::make('fecha_prestamo')->label('Inicio')->date('d/m')
                     ->sortable(),

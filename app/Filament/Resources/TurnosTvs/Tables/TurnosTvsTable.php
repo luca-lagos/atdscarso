@@ -113,26 +113,42 @@ class TurnosTvsTable
                 Filter::make('rango_fechas')
                     ->label('Rango de fechas')
                     ->schema([
-                        DatePicker::make('desde')->label('Desde'),
-                        DatePicker::make('hasta')->label('Hasta'),
+                        DatePicker::make('desde')
+                            ->label('Desde')
+                            ->native(false),
+                        DatePicker::make('hasta')
+                            ->label('Hasta')
+                            ->native(false),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
+                        if (!empty($data['desde']) && !empty($data['hasta'])) {
+                            return $query->whereBetween('fecha_turno', [
+                                Carbon::parse($data['desde'])->startOfDay(),
+                                Carbon::parse($data['hasta'])->endOfDay(),
+                            ]);
+                        }
+
+                        // Si solo uno está presente, aplicar filtro individual
                         return $query
-                            ->when($data['desde'] ?? null, fn(Builder $q, $date) => $q->whereDate('fecha_turno', '>=', $date))
-                            ->when($data['hasta'] ?? null, fn(Builder $q, $date) => $q->whereDate('fecha_turno', '<=', $date));
+                            ->when(
+                                $data['desde'] ?? null,
+                                fn(Builder $q, $date) => $q->where('fecha_turno', '>=', Carbon::parse($date)->startOfDay())
+                            )
+                            ->when(
+                                $data['hasta'] ?? null,
+                                fn(Builder $q, $date) => $q->where('fecha_turno', '<=', Carbon::parse($date)->endOfDay())
+                            );
                     })
                     ->indicateUsing(function (array $data): array {
                         $chips = [];
-                        if (! empty($data['desde'])) {
+                        if (!empty($data['desde'])) {
                             $chips[] = 'Desde ' . Carbon::parse($data['desde'])->format('d/m/Y');
                         }
-                        if (! empty($data['hasta'])) {
+                        if (!empty($data['hasta'])) {
                             $chips[] = 'Hasta ' . Carbon::parse($data['hasta'])->format('d/m/Y');
                         }
                         return $chips;
                     }),
-
-                TrashedFilter::make()->label('Eliminados')->hidden(),
             ], layout: FiltersLayout::AboveContent)
             ->recordActions([
                 EditAction::make()

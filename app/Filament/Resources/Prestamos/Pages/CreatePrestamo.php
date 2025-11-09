@@ -9,6 +9,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class CreatePrestamo extends CreateRecord
 {
@@ -37,8 +38,11 @@ class CreatePrestamo extends CreateRecord
 
     protected function beforeCreate(): void
     {
+        info('Validando disponibilidad de equipo para préstamo...');
         $state = $this->form->getState();
+        info('Estado del formulario: ' . print_r($state, true));
         $equipoId = $state['inventario_id'] ?? null;
+        info('ID del equipo seleccionado: ' . $equipoId);
 
         // Evitar sobreasignar más que la cantidad disponible
         if ($equipoId) {
