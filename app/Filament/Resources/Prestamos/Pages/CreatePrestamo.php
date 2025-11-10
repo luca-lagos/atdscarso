@@ -69,7 +69,7 @@ class CreatePrestamo extends CreateRecord
 
         $filePath = "comodatos/informatica/comodato_{$prestamo->id}.pdf";
 
-        Storage::put($filePath, $pdf->output());
+        Storage::disk('public')->put($filePath, $pdf->output());
 
         // Guardar la ruta en el registro
         $prestamo->update([

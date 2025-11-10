@@ -66,20 +66,13 @@ class InventarioBibliotecasTable
                     ->icon('heroicon-m-tag')
                     ->toggleable(),
 
-                TextColumn::make('cantidad')
-                    ->label('Stock')
-                    ->alignCenter()
-                    ->sortable()
-                    ->badge()
-                    ->color(fn($state) => $state > 2 ? 'success' : ($state > 0 ? 'warning' : 'danger')),
-
                 IconColumn::make('disponible')
                     ->label('Disponible')
                     ->boolean()
                     ->sortable()
                     ->trueIcon('heroicon-m-check-circle')
                     ->falseIcon('heroicon-m-x-circle')
-                    ->getStateUsing(fn(InventarioBiblioteca $record) => $record->disponible),
+                    ->getStateUsing(fn(InventarioBiblioteca $record) => $record->estado == 'disponible'),
 
                 TextColumn::make('created_at')
                     ->date('d/m/Y')

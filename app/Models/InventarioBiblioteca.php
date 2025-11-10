@@ -20,7 +20,6 @@ class InventarioBiblioteca extends Model
         'numero_edicion',
         'categoria',
         'idioma',
-        'cantidad',
         'fecha_edicion',
         'fecha_entrada',
         'procedencia',
@@ -28,6 +27,7 @@ class InventarioBiblioteca extends Model
         'portada_path',
         'estante',
         'columna',
+        'estado',
     ];
     public function prestamos()
     {

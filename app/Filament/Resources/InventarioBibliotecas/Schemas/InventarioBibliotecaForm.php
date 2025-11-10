@@ -138,12 +138,18 @@ class InventarioBibliotecaForm
                                             ->minValue(1)
                                             ->columnSpan(4),
 
-                                        TextInput::make('cantidad')
-                                            ->label('Stock total')
-                                            ->numeric()
-                                            ->minValue(0)
-                                            ->default(1)
-                                            ->helperText('Cantidad total de ejemplares en biblioteca.')
+                                        Select::make('estado')
+                                            ->label('Estado')
+                                            ->options([
+                                                'disponible' => 'Disponible',
+                                                'prestado' => 'Prestado',
+                                                'en_reparacion' => 'En reparación',
+                                                'extraviado' => 'Extraviado',
+                                                'baja' => 'Baja',
+                                            ])
+                                            ->default('disponible')
+                                            ->required()
+                                            ->native(false)
                                             ->columnSpan(4),
 
                                         TextInput::make('fecha_edicion')

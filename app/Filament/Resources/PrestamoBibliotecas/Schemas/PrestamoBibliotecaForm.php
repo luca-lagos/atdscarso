@@ -15,6 +15,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Hash;
 
 class PrestamoBibliotecaForm
 {
@@ -45,8 +46,6 @@ class PrestamoBibliotecaForm
 
     public static function configure(Schema $schema): Schema
     {
-        $defaultVenc = fn() => Carbon::today()->addDays(14)->toDateString();
-
         return $schema
             ->components([
                 Section::make('Libro')
@@ -55,55 +54,103 @@ class PrestamoBibliotecaForm
                             ->label('Libro')
                             ->searchable()
                             ->preload()
-                            ->options(fn() => InventarioBiblioteca::query()->orderBy('titulo')->pluck('titulo', 'id'))
-                            ->getOptionLabelFromRecordUsing(fn(InventarioBiblioteca $r) => "{$r->titulo} — {$r->autor}")
-                            ->helperText('Si no existe, créalo desde aquí.')
-                            ->required()
-                            ->reactive()
-                            ->rule(function () {
-                                return function (string $attribute, $value, \Closure $fail) {
-                                    if (!$value) return;
-                                    $ocupado = PrestamoBiblioteca::query()
-                                        ->where('inventario_biblioteca_id', $value)
-                                        ->whereIn('estado', ['pendiente', 'activo', 'vencido'])
-                                        ->whereNull('fecha_devolucion')
-                                        ->exists();
-                                    if ($ocupado) {
-                                        $fail('No hay ejemplares disponibles para préstamo.');
-                                    }
-                                };
+                            ->relationship(
+                                name: 'libro',
+                                titleAttribute: 'titulo',
+                                modifyQueryUsing: fn($query, $get, $operation) =>
+                                $operation === 'create'
+                                    ? $query->where('estado', '!=', 'prestado')->whereDoesntHave('prestamos', function ($q) {
+                                        $q->whereIn('estado', ['pendiente', 'activo', 'vencido'])
+                                            ->whereNull('fecha_devolucion');
+                                    })->orderBy('titulo')
+                                    : $query->orderBy('titulo')
+                            )
+                            ->getOptionLabelFromRecordUsing(function (InventarioBiblioteca $record) {
+                                return "{$record->titulo} — {$record->autor}" .
+                                    ($record->isbn ? " (ISBN: {$record->isbn})" : "");
                             })
+                            ->helperText('Solo se muestran libros disponibles. Si no existe, créalo desde aquí.')
+                            ->required()
                             ->createOptionForm([
-                                TextInput::make('titulo')->required()->columnSpan(8),
-                                TextInput::make('isbn')->label('ISBN')->columnSpan(4),
-                                TextInput::make('autor')->required()->columnSpan(6),
-                                TextInput::make('editorial')->columnSpan(6),
+                                TextInput::make('titulo')
+                                    ->label('Título')
+                                    ->required()
+                                    ->columnSpan(8),
+
+                                TextInput::make('isbn')
+                                    ->label('ISBN')
+                                    ->unique(table: InventarioBiblioteca::class, ignoreRecord: true)
+                                    ->helperText('Debe ser único para cada ejemplar.')
+                                    ->columnSpan(4),
+
+                                TextInput::make('autor')
+                                    ->required()
+                                    ->columnSpan(6),
+
+                                TextInput::make('editorial')
+                                    ->columnSpan(6),
+
                                 Select::make('categoria')
                                     ->options(self::categorias())
                                     ->searchable()
                                     ->placeholder('Seleccionar categoría')
                                     ->columnSpan(4),
-                                TextInput::make('idioma')->columnSpan(4),
-                                TextInput::make('procedencia')->columnSpan(4),
-                                TextInput::make('coleccion')->label('Colección')->columnSpan(4),
-                                TextInput::make('numero_edicion')->label('N° edición')->columnSpan(4),
-                                TextInput::make('cantidad')->numeric()->minValue(0)->default(1)->columnSpan(4),
-                                TextInput::make('fecha_edicion')->numeric()->label('Año edición')->columnSpan(3),
-                                TextInput::make('fecha_entrada')->numeric()->label('Año entrada')->columnSpan(3),
+
+                                TextInput::make('idioma')
+                                    ->columnSpan(4),
+
+                                TextInput::make('procedencia')
+                                    ->columnSpan(4),
+
+                                TextInput::make('coleccion')
+                                    ->label('Colección')
+                                    ->columnSpan(4),
+
+                                TextInput::make('numero_edicion')
+                                    ->label('N° edición')
+                                    ->columnSpan(4),
+
+                                TextInput::make('ubicacion_estante')
+                                    ->label('Estante')
+                                    ->placeholder('Ej.: A, B, C...')
+                                    ->columnSpan(3),
+
+                                TextInput::make('ubicacion_columna')
+                                    ->label('Columna')
+                                    ->placeholder('Ej.: 1, 2, 3...')
+                                    ->columnSpan(3),
+
+                                TextInput::make('fecha_edicion')
+                                    ->numeric()
+                                    ->label('Año edición')
+                                    ->columnSpan(3),
+
+                                TextInput::make('fecha_entrada')
+                                    ->numeric()
+                                    ->label('Año entrada')
+                                    ->columnSpan(3),
+
                                 FileUpload::make('portada_path')
                                     ->label('Portada')
                                     ->image()
                                     ->directory('portadas-libros')
                                     ->imageEditor()
                                     ->columnSpan(6),
-                                Textarea::make('descripcion')->rows(4)->columnSpan(12),
+
+                                Textarea::make('descripcion')
+                                    ->rows(4)
+                                    ->columnSpan(12),
                             ])
                             ->createOptionAction(function (Action $action) {
                                 return $action
                                     ->modalHeading('Nuevo libro')
-                                    ->modalButton('Crear y seleccionar');
+                                    ->modalButton('Crear y seleccionar')
+                                    ->modalWidth('4xl');
                             })
-                            ->createOptionUsing(fn(array $data) => InventarioBiblioteca::create($data)->getKey()),
+                            ->createOptionUsing(function (array $data) {
+                                $data['estado'] = 'disponible'; // Por defecto disponible
+                                return InventarioBiblioteca::create($data)->getKey();
+                            }),
                     ])->columnSpanFull(),
 
                 Section::make('Usuario')
@@ -117,24 +164,44 @@ class PrestamoBibliotecaForm
                             ->helperText('Alumnos quedan Pendientes; Docentes quedan Activos.')
                             ->getOptionLabelFromRecordUsing(fn(User $u) => "{$u->name} ({$u->email})")
                             ->createOptionForm([
-                                TextInput::make('name')->label('Nombre y apellido')->required()->maxLength(255),
-                                TextInput::make('email')->label('Email')->required()->email()->unique(ignoreRecord: true),
-                                TextInput::make('password')->label('Contraseña')->password()->required()->minLength(6),
-                                Select::make('rol')->label('Rol')->options([
-                                    'profesor' => 'Profesor',
-                                    'alumno'   => 'Alumno',
-                                ])->required()->native(false),
+                                TextInput::make('name')
+                                    ->label('Nombre y apellido')
+                                    ->required()
+                                    ->maxLength(255),
+
+                                TextInput::make('email')
+                                    ->label('Email')
+                                    ->required()
+                                    ->email()
+                                    ->unique(ignoreRecord: true),
+
+                                TextInput::make('password')
+                                    ->label('Contraseña')
+                                    ->password()
+                                    ->required()
+                                    ->minLength(6),
+
+                                Select::make('rol')
+                                    ->label('Rol')
+                                    ->options([
+                                        'profesor' => 'Profesor',
+                                        'alumno'   => 'Alumno',
+                                    ])
+                                    ->required()
+                                    ->native(false),
                             ])
                             ->createOptionAction(function (Action $action) {
                                 $action->visible(fn() => auth()->user()?->can('create_prestamo_biblioteca') || auth()->user()?->can('create_prestamo'));
-                                return $action->modalHeading('Crear usuario (Profesor/Alumno)')->modalWidth('md');
+                                return $action
+                                    ->modalHeading('Crear usuario (Profesor/Alumno)')
+                                    ->modalWidth('md');
                             })
                             ->createOptionUsing(function (array $data): int {
                                 $rol = in_array($data['rol'] ?? '', ['profesor', 'alumno'], true) ? $data['rol'] : 'alumno';
                                 $user = User::create([
                                     'name'     => $data['name'],
                                     'email'    => $data['email'],
-                                    'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
+                                    'password' => Hash::make($data['password']),
                                 ]);
                                 $user->assignRole($rol);
                                 return $user->getKey();
@@ -158,6 +225,7 @@ class PrestamoBibliotecaForm
                                 ->columnSpan(6)
                                 ->native(false),
                         ]),
+
                         Textarea::make('observaciones')
                             ->rows(3)
                             ->placeholder('Notas internas, estado del ejemplar, etc.')
