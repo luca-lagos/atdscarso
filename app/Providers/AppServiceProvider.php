@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Prestamo;
 use App\Models\PrestamoBiblioteca;
 use App\Observers\PrestamoBibliotecaObserver;
+use App\Observers\PrestamoObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }*/
         PrestamoBiblioteca::observe(PrestamoBibliotecaObserver::class);
+        Prestamo::observe(PrestamoObserver::class);
     }
 }

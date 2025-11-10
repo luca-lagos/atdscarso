@@ -32,13 +32,26 @@ class PrestamoForm
                             ->schema([
                                 Select::make('inventario_id')
                                     ->label('Equipo')
-                                    ->relationship('inventario', 'nombre_equipo')
                                     ->searchable()
                                     ->preload()
+                                    ->relationship(
+                                        name: 'inventario',
+                                        titleAttribute: 'nombre_equipo',
+                                        modifyQueryUsing: fn($query, $get, $operation) =>
+                                        $operation === 'create'
+                                            ? $query->where('estado', 'disponible')->orderBy('nombre_equipo')
+                                            : $query->orderBy('nombre_equipo')
+                                    )
+                                    ->getOptionLabelFromRecordUsing(
+                                        fn(Inventario $record) =>
+                                        "{$record->nombre_equipo}" .
+                                            ($record->marca ? " — {$record->marca}" : "") .
+                                            ($record->nro_serie ? " (S/N: {$record->nro_serie})" : "")
+                                    )
+                                    ->helperText('Solo se muestran equipos disponibles.')
+                                    ->required()
                                     ->native(false)
-                                    ->placeholder('Seleccionar equipo')
-                                    ->required(),
-
+                                    ->placeholder('Seleccionar equipo'),
                                 Select::make('user_id')
                                     ->label('Usuario')
                                     ->searchable()

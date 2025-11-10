@@ -36,7 +36,7 @@ class CreatePrestamo extends CreateRecord
         return $data;
     }*/
 
-    protected function beforeCreate(): void
+    /*protected function beforeCreate(): void
     {
         info('Validando disponibilidad de equipo para préstamo...');
         $state = $this->form->getState();
@@ -58,20 +58,25 @@ class CreatePrestamo extends CreateRecord
                 ]);
             }
         }
-    }
+    }*/
 
     protected function afterCreate(): void
     {
         $prestamo = $this->record;
 
-        // Generamos PDF con una vista Blade
+        // ✅ Actualizar estado del equipo a "prestado"
+        if ($prestamo->inventario_id) {
+            Inventario::where('id', $prestamo->inventario_id)
+                ->update(['estado' => 'prestado']);
+        }
+
+        // Generar PDF
         $pdf = Pdf::loadView('pdf.comodato-informatica', ['prestamo' => $prestamo]);
 
         $filePath = "comodatos/informatica/comodato_{$prestamo->id}.pdf";
 
         Storage::disk('public')->put($filePath, $pdf->output());
 
-        // Guardar la ruta en el registro
         $prestamo->update([
             'pdf_path' => $filePath,
         ]);
