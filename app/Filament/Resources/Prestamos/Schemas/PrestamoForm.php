@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Prestamos\Schemas;
 
+use App\Models\Inventario;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -12,6 +13,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Permission\Models\Role;
 
 class PrestamoForm
 {
@@ -56,7 +58,12 @@ class PrestamoForm
                                     ->label('Usuario')
                                     ->searchable()
                                     ->preload()
-                                    ->options(User::query()->orderBy('name')->pluck('name', 'id'))
+                                    ->options(
+                                        User::query()
+                                            ->whereHas('roles', fn($q) => $q->whereIn('name', ['profesor', 'alumno']))
+                                            ->orderBy('name')
+                                            ->pluck('name', 'id')
+                                    )
                                     ->required()
                                     ->helperText('Alumnos quedan Pendientes hasta confirmación; Docentes quedan Activos.')
                                     ->createOptionForm([
@@ -77,25 +84,25 @@ class PrestamoForm
                                             ->required()
                                             ->minLength(6),
 
-                                        Select::make('rol')
+                                        // ✅ Ahora el rol viene desde la tabla "roles"
+                                        Select::make('role_id')
                                             ->label('Rol')
-                                            ->options([
-                                                'profesor' => 'Profesor',
-                                                'alumno'   => 'Alumno',
-                                            ])
+                                            ->options(
+                                                Role::query()
+                                                    ->whereIn('name', ['profesor', 'alumno'])
+                                                    ->pluck('name', 'id')
+                                            )
                                             ->required()
                                             ->native(false),
                                     ])
                                     ->createOptionAction(function (Action $action) {
-                                        // Solo quienes pueden crear préstamos pueden usar esta acción.
                                         $action->visible(fn() => auth()->user()?->can('create_prestamo_biblioteca') || auth()->user()?->can('create_prestamo_informatica'));
                                         return $action
                                             ->modalHeading('Crear usuario (Profesor/Alumno)')
                                             ->modalWidth('md');
                                     })
                                     ->createOptionUsing(function (array $data): int {
-                                        // Seguridad: forzar rol permitido
-                                        $rol = in_array($data['rol'] ?? '', ['profesor', 'alumno'], true) ? $data['rol'] : 'alumno';
+                                        $role = Role::find($data['role_id']);
 
                                         $user = User::create([
                                             'name'     => $data['name'],
@@ -103,12 +110,13 @@ class PrestamoForm
                                             'password' => Hash::make($data['password']),
                                         ]);
 
-                                        // Asignar rol
-                                        $user->assignRole($rol);
+                                        if ($role) {
+                                            $user->assignRole($role->name);
+                                        }
 
                                         return $user->getKey();
                                     })
-                                    ->getOptionLabelFromRecordUsing(fn(User $u) => "{$u->name} ({$u->email})"),
+                                    ->getOptionLabelFromRecordUsing(fn(User $u) => "{$u->name} ({$u->email})")
                             ]),
 
                         // Fila 2: Fechas (6/6 en md+)
@@ -145,7 +153,7 @@ class PrestamoForm
                                     ->default('activo')
                                     ->native(false),
                             ]),
-                    ]),
+                    ])->columnSpanFull(),
 
                 Section::make('Observaciones')
                     ->description('Notas internas o condiciones del préstamo.')
@@ -156,7 +164,7 @@ class PrestamoForm
                             ->rows(3)
                             ->placeholder('Ej.: Entregado con cargador, bolsa y control remoto…')
                             ->columnSpanFull(),
-                    ]),
+                    ])->columnSpanFull(),
             ]);
     }
 }

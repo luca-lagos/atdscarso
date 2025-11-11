@@ -41,9 +41,7 @@ class InventariosTable
                     ->sortable()
                     ->searchable()
                     ->wrap()
-                    ->description(fn($record) => $record->modelo ?: null, position: 'below')
-                    ->icon('heroicon-m-computer-desktop')
-                    ->iconColor('primary'),
+                    ->description(fn($record) => $record->modelo ?: null, position: 'below'),
 
                 TextColumn::make('categoria')
                     ->label('Categoría')
@@ -104,11 +102,6 @@ class InventariosTable
                             default         => ucfirst((string) $state),
                         };
                     })
-                    ->sortable(),
-
-                TextColumn::make('cantidad')
-                    ->label('Stock')
-                    ->searchable()
                     ->sortable(),
 
                 TextColumn::make('updated_at')

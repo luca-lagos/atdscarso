@@ -15,6 +15,8 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Schemas\Schema;
 use Closure;
 use HusamTariq\FilamentTimePicker\Forms\Components\TimePickerField;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class TurnosTvForm
 {
@@ -32,44 +34,68 @@ class TurnosTvForm
                             'md' => 2,
                         ])->schema([
                             Select::make('user_id')
-                                ->label('Profesor')
-                                ->options(
-                                    User::query()
-                                        ->where('rol', 'profesor') // o 'role'
-                                        ->orderBy('name') // ajustá si usás 'name'
-                                        ->pluck('name', 'id')
-                                        ->toArray()
-                                )
-                                ->required()
+                                ->label('Usuario')
                                 ->searchable()
                                 ->preload()
-                                ->native(false)
+                                ->options(
+                                    User::query()
+                                        ->whereHas('roles', fn($q) => $q->whereIn('name', ['profesor', 'alumno']))
+                                        ->orderBy('name')
+                                        ->pluck('name', 'id')
+                                )
+                                ->required()
+                                ->helperText('Alumnos quedan Pendientes hasta confirmación; Docentes quedan Activos.')
                                 ->createOptionForm([
                                     TextInput::make('name')
-                                        ->label('Nombre completo')
-                                        ->maxLength(255)
-                                        ->required(),
+                                        ->label('Nombre y apellido')
+                                        ->required()
+                                        ->maxLength(255),
+
                                     TextInput::make('email')
-                                        ->label('Correo electrónico')
-                                        ->unique(ignoreRecord: true)
+                                        ->label('Email')
+                                        ->required()
                                         ->email()
-                                        ->required(),
+                                        ->unique(ignoreRecord: true),
+
                                     TextInput::make('password')
-                                        ->password()
-                                        ->revealable()
-                                        ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
-                                        ->dehydrated(fn($state) => filled($state))
                                         ->label('Contraseña')
-                                        ->required(),
-                                    Select::make('rol')
-                                        ->options(['admin' => 'Admin', 'profesor' => 'Profesor'])
-                                        ->default('profesor')
-                                        ->label('Asignar rol')
-                                        ->required(),
+                                        ->password()
+                                        ->required()
+                                        ->minLength(6),
+
+                                    // ✅ Ahora el rol viene desde la tabla "roles"
+                                    Select::make('role_id')
+                                        ->label('Rol')
+                                        ->options(
+                                            Role::query()
+                                                ->whereIn('name', ['profesor', 'alumno'])
+                                                ->pluck('name', 'id')
+                                        )
+                                        ->required()
+                                        ->native(false),
                                 ])
                                 ->createOptionAction(function (Action $action) {
-                                    $action->label('Crear profesor')->modalWidth('md');
-                                }),
+                                    $action->visible(fn() => auth()->user()?->can('create_turnos_tv'));
+                                    return $action
+                                        ->modalHeading('Crear usuario (Profesor/Alumno)')
+                                        ->modalWidth('md');
+                                })
+                                ->createOptionUsing(function (array $data): int {
+                                    $role = Role::find($data['role_id']);
+
+                                    $user = User::create([
+                                        'name'     => $data['name'],
+                                        'email'    => $data['email'],
+                                        'password' => Hash::make($data['password']),
+                                    ]);
+
+                                    if ($role) {
+                                        $user->assignRole($role->name);
+                                    }
+
+                                    return $user->getKey();
+                                })
+                                ->getOptionLabelFromRecordUsing(fn(User $u) => "{$u->name} ({$u->email})"),
 
                             // TV portátil: sólo inventarios con categoría tv_portatil
                             Select::make('inventario_id')
@@ -138,7 +164,7 @@ class TurnosTvForm
                                 ->default('activo')
                                 ->native(false),
                         ]),
-                    ]),
+                    ])->columnSpanFull(),
 
                 Section::make('Observaciones')
                     ->description('Notas o detalles para el turno.')
@@ -149,7 +175,7 @@ class TurnosTvForm
                             ->rows(3)
                             ->placeholder('Ej.: Se entrega con control y cable HDMI.')
                             ->columnSpanFull(),
-                    ]),
+                    ])->columnSpanFull(),
             ]);
     }
 }

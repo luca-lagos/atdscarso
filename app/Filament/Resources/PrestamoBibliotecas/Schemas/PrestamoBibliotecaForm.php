@@ -16,6 +16,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class PrestamoBibliotecaForm
 {
@@ -159,10 +160,14 @@ class PrestamoBibliotecaForm
                             ->label('Usuario')
                             ->searchable()
                             ->preload()
-                            ->options(User::query()->orderBy('name')->pluck('name', 'id'))
+                            ->options(
+                                User::query()
+                                    ->whereHas('roles', fn($q) => $q->whereIn('name', ['profesor', 'alumno']))
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                            )
                             ->required()
-                            ->helperText('Alumnos quedan Pendientes; Docentes quedan Activos.')
-                            ->getOptionLabelFromRecordUsing(fn(User $u) => "{$u->name} ({$u->email})")
+                            ->helperText('Alumnos quedan Pendientes hasta confirmación; Docentes quedan Activos.')
                             ->createOptionForm([
                                 TextInput::make('name')
                                     ->label('Nombre y apellido')
@@ -181,12 +186,14 @@ class PrestamoBibliotecaForm
                                     ->required()
                                     ->minLength(6),
 
-                                Select::make('rol')
+                                // ✅ Ahora el rol viene desde la tabla "roles"
+                                Select::make('role_id')
                                     ->label('Rol')
-                                    ->options([
-                                        'profesor' => 'Profesor',
-                                        'alumno'   => 'Alumno',
-                                    ])
+                                    ->options(
+                                        Role::query()
+                                            ->whereIn('name', ['profesor', 'alumno'])
+                                            ->pluck('name', 'id')
+                                    )
                                     ->required()
                                     ->native(false),
                             ])
@@ -197,15 +204,21 @@ class PrestamoBibliotecaForm
                                     ->modalWidth('md');
                             })
                             ->createOptionUsing(function (array $data): int {
-                                $rol = in_array($data['rol'] ?? '', ['profesor', 'alumno'], true) ? $data['rol'] : 'alumno';
+                                $role = Role::find($data['role_id']);
+
                                 $user = User::create([
                                     'name'     => $data['name'],
                                     'email'    => $data['email'],
                                     'password' => Hash::make($data['password']),
                                 ]);
-                                $user->assignRole($rol);
+
+                                if ($role) {
+                                    $user->assignRole($role->name);
+                                }
+
                                 return $user->getKey();
-                            }),
+                            })
+                            ->getOptionLabelFromRecordUsing(fn(User $u) => "{$u->name} ({$u->email})")
                     ])->columnSpanFull(),
 
                 Section::make('Fechas y notas')
