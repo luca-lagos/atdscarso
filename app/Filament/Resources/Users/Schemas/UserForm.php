@@ -34,7 +34,7 @@ class UserForm
                             ->label('Contraseña')
                             ->hint('Dejar en blanco para mantener la contraseña actual')
                             ->required(),
-                        FileUpload::make('avatar_path')
+                        FileUpload::make('avatar_url')
                             ->label('Foto de perfil')
                             ->directory('avatars')
                             ->image()

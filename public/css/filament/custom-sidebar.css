@@ -1,9 +1,22 @@
-.layout-collapsed .fi-sidebar {
-    width: 70px !important;
-    overflow: hidden;
-    transition: width 0.3s ease;
+/* === Debug visual (para confirmar inyección) === */
+body::before {
+    content: "🎨 Custom Sidebar cargado";
+    position: fixed;
+    top: 0;
+    right: 0;
+    background: amber;
+    color: black;
+    font-weight: bold;
+    padding: 4px 6px;
+    z-index: 9999;
 }
 
-.layout-collapsed .fi-sidebar .fi-sidebar-item-label {
-    display: none;
+/* === Sidebar retractil === */
+body.layout-collapsed .fi-sidebar {
+    width: 72px !important;
+    min-width: 72px !important;
+    transition: width 0.25s ease;
+}
+body.layout-collapsed .fi-sidebar .fi-sidebar-item-label {
+    display: none !important;
 }

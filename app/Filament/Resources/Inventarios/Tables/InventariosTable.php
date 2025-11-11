@@ -38,10 +38,11 @@ class InventariosTable
             ->searchPlaceholder('Buscar por nombre, serie, marca o modelo...')
             ->columns([
                 ImageColumn::make('portada_path')
-                    ->label('Imagen')
-                    ->square()
-                    ->height(60)
-                    ->sortable(),
+                    ->label('Portada')
+                    ->circular()
+                    ->sortable()
+                    ->size(44)
+                    ->disk(config('filesystems.default', 'public')),
                 TextColumn::make('nombre_equipo')
                     ->label('Equipo')
                     ->sortable()

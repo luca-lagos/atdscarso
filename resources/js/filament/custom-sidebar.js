@@ -1,14 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const toggleId = "scarso-toolbar-toggle-btn";
-
-    if (document.getElementById(toggleId)) return; // evitar duplicados
-
     const toggle = document.createElement("button");
-    toggle.id = toggleId;
-    toggle.textContent = "☰";
     toggle.className =
-        "fixed top-4 left-4 z-[100] bg-amber-500 text-black rounded-md p-2 shadow";
-
+        "fixed top-4 left-4 z-50 bg-gray-800 text-white p-2 rounded-md";
+    toggle.innerHTML = "☰";
     document.body.appendChild(toggle);
 
     toggle.addEventListener("click", () => {

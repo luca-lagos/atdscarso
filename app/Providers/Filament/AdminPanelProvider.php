@@ -12,10 +12,12 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Assets\Css;
+use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
@@ -39,18 +41,24 @@ class AdminPanelProvider extends PanelProvider
 
         FilamentAsset::register([
             Css::make('scarso-theme', $themeUrl . '?v=' . $v1),
-            /*Css::make('calendar-theme', $calUrl . '?v=' . $v2),*/
-        ]);
+            /*Css::make('scarso-custom-sidebar', asset('css/filament/custom-sidebar.css')),
+            Js::make('scarso-custom-sidebar', asset('js/filament/custom-sidebar.js')),*/
+        ], 'scarso');
 
         return $panel
             ->default()
             ->id('admin')
             ->path('dashboard')
-            ->viteTheme('resources/css/filament/custom-sidebar.css')
-            ->assets([
-                asset('resources/js/filament/custom-sidebar.js')
-            ])
             ->profile()
+            ->sidebarCollapsibleOnDesktop()
+            ->navigationGroups([
+                NavigationGroup::make('Biblioteca')
+                    ->icon('heroicon-o-building-library'),
+                NavigationGroup::make('Informática')
+                    ->icon('heroicon-o-computer-desktop'),
+                NavigationGroup::make('Gestión de usuarios')
+                    ->icon('heroicon-o-user-group'),
+            ])
             ->login()
             ->brandName('Escuela Scarso')
             // ->darkMode(true) // opcional: forzar dark; si no, respeta prefers-color-scheme

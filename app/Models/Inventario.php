@@ -17,6 +17,7 @@ class Inventario extends Model
         'estado',
         'cantidad',
         'observaciones',
+        'portada_path',
     ];
 
     public function prestamos()

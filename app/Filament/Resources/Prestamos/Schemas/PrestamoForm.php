@@ -96,7 +96,7 @@ class PrestamoForm
                                             ->native(false),
                                     ])
                                     ->createOptionAction(function (Action $action) {
-                                        $action->visible(fn() => auth()->user()?->can('create_prestamo_biblioteca') || auth()->user()?->can('create_prestamo_informatica'));
+                                        $action->visible(fn() => auth()->user()?->can('create_prestamo_biblioteca') || auth()->user()?->can('create_prestamo'));
                                         return $action
                                             ->modalHeading('Crear usuario (Profesor/Alumno)')
                                             ->modalWidth('md');

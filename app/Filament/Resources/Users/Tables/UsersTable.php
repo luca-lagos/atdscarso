@@ -16,7 +16,7 @@ class UsersTable
     {
         return $table
             ->columns([
-                ImageColumn::make('avatar_path')
+                ImageColumn::make('avatar_url')
                     ->label('Foto')
                     ->square()
                     ->height(40)

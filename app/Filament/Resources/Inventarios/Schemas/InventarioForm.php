@@ -27,7 +27,8 @@ class InventarioForm
                             ->image()
                             ->imageEditor()
                             ->columnSpan(6)
-                            ->helperText('Subí una imagen o foto del equipo.'),
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                            ->helperText('Formatos: JPG/PNG/WebP.'),
                         TextInput::make('nombre_equipo')
                             ->label('Nombre del equipo')
                             ->placeholder('Ej.: Notebook laboratorio 3')
@@ -83,16 +84,6 @@ class InventarioForm
                             ->default('disponible')
                             ->required()
                             ->native(false)
-                            ->columnSpan(4),
-
-                        TextInput::make('cantidad')
-                            ->label('Cantidad')
-                            ->numeric()
-                            ->minValue(1)
-                            ->maxValue(999)
-                            ->default(1)
-                            ->required()
-                            ->helperText('Cantidad de unidades disponibles de este equipo.')
                             ->columnSpan(4),
                     ])->columnSpanFull(),
 
