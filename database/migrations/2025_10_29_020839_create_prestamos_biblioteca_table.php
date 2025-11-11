@@ -21,7 +21,7 @@ return new class extends Migration
                     ->nullOnDelete()
                     ->after('inventario_biblioteca_id');
             }
-            $table->enum('estado', ['pendiente', 'activo', 'vencido', 'devuelto', 'perdido'])->default('pendiente')->change();
+            $table->enum('estado', ['pendiente', 'activo', 'vencido', 'devuelto', 'perdido'])->default('pendiente');
             $table->date('fecha_prestamo');
             $table->date('fecha_vencimiento')->index();
             $table->date('fecha_devolucion')->nullable();

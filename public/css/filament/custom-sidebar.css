@@ -1,0 +1,9 @@
+.layout-collapsed .fi-sidebar {
+    width: 70px !important;
+    overflow: hidden;
+    transition: width 0.3s ease;
+}
+
+.layout-collapsed .fi-sidebar .fi-sidebar-item-label {
+    display: none;
+}

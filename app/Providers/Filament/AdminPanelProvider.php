@@ -46,6 +46,10 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('dashboard')
+            ->viteTheme('resources/css/filament/custom-sidebar.css')
+            ->assets([
+                asset('resources/js/filament/custom-sidebar.js')
+            ])
             ->profile()
             ->login()
             ->brandName('Escuela Scarso')

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Inventarios\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -20,6 +21,13 @@ class InventarioForm
                     ->icon('heroicon-m-computer-desktop')
                     ->columns(12)
                     ->schema([
+                        FileUpload::make('portada_path')
+                            ->label('Foto / portada del equipo')
+                            ->directory('portadas-equipos')
+                            ->image()
+                            ->imageEditor()
+                            ->columnSpan(6)
+                            ->helperText('Subí una imagen o foto del equipo.'),
                         TextInput::make('nombre_equipo')
                             ->label('Nombre del equipo')
                             ->placeholder('Ej.: Notebook laboratorio 3')
@@ -41,7 +49,7 @@ class InventarioForm
                             ->native(false)
                             ->placeholder('Seleccionar categoría')
                             ->required()
-                            ->columnSpan(6),
+                            ->columnSpan(4),
 
                         TextInput::make('marca')
                             ->label('Marca')
@@ -86,7 +94,7 @@ class InventarioForm
                             ->required()
                             ->helperText('Cantidad de unidades disponibles de este equipo.')
                             ->columnSpan(4),
-                    ]),
+                    ])->columnSpanFull(),
 
                 Section::make('Observaciones')
                     ->description('Notas internas, estado físico, accesorios, o advertencias.')
@@ -99,7 +107,7 @@ class InventarioForm
                             ->rows(4)
                             ->maxLength(2000)
                             ->columnSpanFull(),
-                    ]),
+                    ])->columnSpanFull(),
             ]);
     }
 }

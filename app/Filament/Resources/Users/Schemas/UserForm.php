@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -33,6 +34,14 @@ class UserForm
                             ->label('Contraseña')
                             ->hint('Dejar en blanco para mantener la contraseña actual')
                             ->required(),
+                        FileUpload::make('avatar_path')
+                            ->label('Foto de perfil')
+                            ->directory('avatars')
+                            ->image()
+                            ->imageEditor()
+                            ->circleCropper() // lo hace redondo
+                            ->maxSize(2048)
+                            ->columnSpan('full'),
                     ])->columns(2),
                 Section::make('Roles y permisos')
                     ->description('Asignar roles y permisos al usuario.')

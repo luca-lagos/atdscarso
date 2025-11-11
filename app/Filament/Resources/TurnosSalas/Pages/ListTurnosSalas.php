@@ -14,9 +14,12 @@ class ListTurnosSalas extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->label('Crear Turno de Sala'),
         ];
     }
+
+
 
     protected function getHeaderWidgets(): array
     {

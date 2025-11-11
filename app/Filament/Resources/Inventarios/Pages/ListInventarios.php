@@ -14,7 +14,7 @@ class ListInventarios extends ListRecords
     {
         return [
             CreateAction::make()
-            ->label('Agregar Equipo'),
+                ->label('Crear Equipo'),
         ];
     }
 

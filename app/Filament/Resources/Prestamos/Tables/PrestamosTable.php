@@ -116,7 +116,6 @@ class PrestamosTable
                     ->label('Profesor')
                     ->options(
                         User::query()
-                            ->where('rol', 'profesor')
                             ->orderBy('name')
                             ->pluck('name', 'id')
                             ->toArray()

@@ -11,6 +11,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
@@ -36,6 +37,11 @@ class InventariosTable
             ->paginated([25, 50, 100])
             ->searchPlaceholder('Buscar por nombre, serie, marca o modelo...')
             ->columns([
+                ImageColumn::make('portada_path')
+                    ->label('Imagen')
+                    ->square()
+                    ->height(60)
+                    ->sortable(),
                 TextColumn::make('nombre_equipo')
                     ->label('Equipo')
                     ->sortable()
