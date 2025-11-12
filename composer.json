@@ -13,6 +13,7 @@
         "ext-intl": "*",
         "ext-zip": "*",
         "barryvdh/laravel-dompdf": "^3.1",
+        "bezhansalleh/filament-panel-switch": "^2.0",
         "bezhansalleh/filament-shield": "^4.0",
         "filament/filament": "^4.1",
         "guava/calendar": "^2.0",

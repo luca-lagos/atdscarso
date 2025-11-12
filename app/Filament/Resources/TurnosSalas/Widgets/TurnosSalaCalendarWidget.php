@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\TurnosSalas\Widgets;
 
 use App\Filament\Resources\TurnosSalas\Pages\CreateTurnosSala;
-use App\Filament\Resources\TurnosSalas\Pages\EditTurnosSala;
 use App\Models\Turnos_sala;
 use Carbon\Carbon;
 use Guava\Calendar\Filament\CalendarWidget;
@@ -15,19 +14,17 @@ class TurnosSalaCalendarWidget extends CalendarWidget
 {
     public string|\Illuminate\Support\HtmlString|null|bool $heading = 'Turnos de sala de informática';
 
-    // Habilitamos interacciones
     protected bool $eventClickEnabled = true;
-    protected ?string $defaultEventClickAction = 'edit'; // manejamos manualmente
+    protected ?string $defaultEventClickAction = 'edit';
     protected bool $useFilamentTimezone = true;
     protected bool $selectable = true;
-    protected bool $editable = true; // drag & drop
+    protected bool $editable = true;
 
-    // Opciones visuales de FullCalendar a través del widget Guava
     protected function getCalendarOptions(): array
     {
         return [
             'locale' => 'es',
-            'timeZone' => 'local',  // ← Agregar esta línea
+            'timeZone' => 'local',
             'initialView' => 'dayGridMonth',
             'height' => 'auto',
             'headerToolbar' => [
@@ -59,12 +56,11 @@ class TurnosSalaCalendarWidget extends CalendarWidget
             ->get();
 
         return $turnos->map(function (Turnos_sala $t) {
-            // Asegurar que fecha_turno sea string en formato Y-m-d
+            // Formatear fecha y horas
             $fechaStr = $t->fecha_turno instanceof Carbon
                 ? $t->fecha_turno->format('Y-m-d')
                 : $t->fecha_turno;
 
-            // Asegurar que las horas sean strings en formato H:i:s
             $horaInicio = $t->hora_inicio instanceof Carbon
                 ? $t->hora_inicio->format('H:i:s')
                 : $t->hora_inicio;
@@ -73,17 +69,19 @@ class TurnosSalaCalendarWidget extends CalendarWidget
                 ? $t->hora_fin->format('H:i:s')
                 : $t->hora_fin;
 
-            // Crear las fechas completas en formato ISO
             $start = $fechaStr . 'T' . substr($horaInicio, 0, 5) . ':00';
             $end   = $fechaStr . 'T' . substr($horaFin, 0, 5) . ':00';
 
-            $title = trim(($t->curso ? "{$t->curso} {$t->division}" : 'Sin curso') . ' · ' . ($t->user->name ?? 'Profesor'));
+            // ✅ Título mejorado: "3°5° - Prof. García"
+            $curso = $t->curso ? "{$t->curso}°{$t->division}" : 'Sin curso';
+            $profesor = $t->user->name ?? 'Profesor';
+            $title = "{$curso} - {$profesor}";
 
-            // Colores por tipo
-            [$bg, $text, $border] = match ($t->tipo) {
-                'permanente' => ['#7B1E2B', '#ffffff', '#6b1a26'], // bordó
-                'temporal'   => ['#2E7D32', '#ffffff', '#276c2b'], // verde
-                default      => ['#475569', '#ffffff', '#334155'],
+            // ✅ Paleta de colores coherente con tema Amber
+            [$bg, $text] = match ($t->tipo) {
+                'permanente' => ['#D97706', '#ffffff'], // Amber 600
+                'temporal'   => ['#059669', '#ffffff'], // Emerald 600
+                default      => ['#64748B', '#ffffff'], // Slate 500
             };
 
             return CalendarEvent::make()
@@ -97,28 +95,12 @@ class TurnosSalaCalendarWidget extends CalendarWidget
                     'model' => Turnos_sala::class,
                     'key' => $t->getKey(),
                     'tipo' => $t->tipo,
-                    'profesor' => $t->user->name ?? null,
+                    'profesor' => $profesor,
+                    'curso' => $curso,
                 ]);
-
-            /*return [
-                'id'    => (string) $t->getKey(),
-                'title' => $title,
-                'start' => $start->toIso8601String(),
-                'end'   => $end->toIso8601String(),
-                'allDay' => false,
-                'backgroundColor' => $bg,
-                'borderColor' => $border,
-                'textColor' => $text,
-                'extendedProps' => [
-                    'recordId' => $t->getKey(),
-                    'tipo' => $t->tipo,
-                    'profesor' => $t->user->nombre_completo ?? null,
-                ],
-            ];*/
         });
     }
 
-    // Seleccionar rango vacío: ir a Create con datos prellenados
     protected function onSelect(array $selectInfo): ?string
     {
         $start = Carbon::parse($selectInfo['start']);
@@ -133,8 +115,6 @@ class TurnosSalaCalendarWidget extends CalendarWidget
 
     protected function updateEventTiming(array $event): void
     {
-        // Guava Calendar ya resuelve el modelo automáticamente
-        // si usás 'model' y 'key' en extendedProps
         $modelClass = data_get($event, 'extendedProps.model');
         $key = data_get($event, 'extendedProps.key') ?? data_get($event, 'id');
 

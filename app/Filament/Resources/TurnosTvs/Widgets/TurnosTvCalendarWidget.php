@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\TurnosTvs\Widgets;
 
 use App\Filament\Resources\TurnosTvs\Pages\CreateTurnosTv;
-use App\Filament\Resources\TurnosTvs\Pages\EditTurnosTv;
 use App\Models\Turnos_tv;
 use Carbon\Carbon;
 use Guava\Calendar\Filament\CalendarWidget;
@@ -25,7 +24,7 @@ class TurnosTvCalendarWidget extends CalendarWidget
     {
         return [
             'locale' => 'es',
-            'timeZone' => 'local',  // ← Agregar esta línea
+            'timeZone' => 'local',
             'initialView' => 'dayGridMonth',
             'height' => 'auto',
             'headerToolbar' => [
@@ -57,12 +56,11 @@ class TurnosTvCalendarWidget extends CalendarWidget
             ->get();
 
         return $turnos->map(function (Turnos_tv $t) {
-            // Asegurar que fecha_turno sea string en formato Y-m-d
+            // Formatear fecha y horas
             $fechaStr = $t->fecha_turno instanceof Carbon
                 ? $t->fecha_turno->format('Y-m-d')
                 : $t->fecha_turno;
 
-            // Asegurar que las horas sean strings en formato H:i:s
             $horaInicio = $t->hora_inicio instanceof Carbon
                 ? $t->hora_inicio->format('H:i:s')
                 : $t->hora_inicio;
@@ -71,18 +69,21 @@ class TurnosTvCalendarWidget extends CalendarWidget
                 ? $t->hora_fin->format('H:i:s')
                 : $t->hora_fin;
 
-            // Crear las fechas completas en formato ISO
             $start = $fechaStr . 'T' . substr($horaInicio, 0, 5) . ':00';
             $end   = $fechaStr . 'T' . substr($horaFin, 0, 5) . ':00';
 
-            $title = trim(($t->inventario->nombre_equipo ?? 'TV') . ' · ' . ($t->user->name ?? 'Profesor'));
+            // ✅ Título mejorado: "TV Samsung - Prof. Martínez"
+            $tvName = $t->inventario->nombre_equipo ?? 'TV';
+            $profesor = $t->user->name ?? 'Profesor';
+            $title = "{$tvName} - {$profesor}";
 
-            [$bg, $text, $border] = match ($t->estado) {
-                'activo'     => ['#7B1E2B', '#ffffff', '#6b1a26'],
-                'confirmado' => ['#2E7D32', '#ffffff', '#276c2b'],
-                'finalizado' => ['#475569', '#ffffff', '#334155'],
-                'cancelado'  => ['#C62828', '#ffffff', '#b12525'],
-                default      => ['#64748B', '#ffffff', '#475569'],
+            // ✅ Paleta de colores coherente con tema Amber
+            [$bg, $text] = match ($t->estado) {
+                'activo'     => ['#D97706', '#ffffff'], // Amber 600
+                'confirmado' => ['#059669', '#ffffff'], // Emerald 600
+                'finalizado' => ['#64748B', '#ffffff'], // Slate 500
+                'cancelado'  => ['#DC2626', '#ffffff'], // Red 600
+                default      => ['#94A3B8', '#ffffff'], // Slate 400
             };
 
             return CalendarEvent::make()
@@ -96,8 +97,8 @@ class TurnosTvCalendarWidget extends CalendarWidget
                     'model' => Turnos_tv::class,
                     'key' => $t->getKey(),
                     'estado'   => $t->estado,
-                    'profesor' => $t->user->name ?? null,
-                    'tv'       => $t->inventario->nombre_equipo ?? null,
+                    'profesor' => $profesor,
+                    'tv'       => $tvName,
                 ]);
         });
     }
@@ -116,8 +117,6 @@ class TurnosTvCalendarWidget extends CalendarWidget
 
     protected function updateEventTiming(array $event): void
     {
-        // Guava Calendar ya resuelve el modelo automáticamente
-        // si usás 'model' y 'key' en extendedProps
         $modelClass = data_get($event, 'extendedProps.model');
         $key = data_get($event, 'extendedProps.key') ?? data_get($event, 'id');
 

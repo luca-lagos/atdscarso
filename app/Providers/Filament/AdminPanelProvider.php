@@ -7,6 +7,7 @@ use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\UltimosPrestamosBibliotecaWidget;
 use App\Filament\Widgets\UltimosPrestamosInformaticaWidget;
+use BezhanSalleh\PanelSwitch\PanelSwitch;
 use Filament\Forms\Components\FileUpload;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;

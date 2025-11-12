@@ -65,8 +65,18 @@ return [
     'super_admin' => [
         'enabled' => true,
         'name' => 'super-admin',
+        'panels' => ['admin'],
         'define_via_gate' => false,
         'intercept_gate' => 'before',
+    ],
+
+    'roles' => [
+        'docente' => [
+            'panels' => ['docentes'],
+        ],
+        'alumno' => [
+            'panels' => ['alumnos'],
+        ],
     ],
 
     /*
