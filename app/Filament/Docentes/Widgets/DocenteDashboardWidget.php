@@ -14,7 +14,7 @@ class DocenteDashboardWidget extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
-    public function getData(): array
+    public function getViewData(): array
     {
         $user = Auth::user();
 

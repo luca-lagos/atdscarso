@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
             $panelSwitch
                 ->visible(fn(): bool => auth()->user()->hasRole('super-admin'))
                 ->modalHeading('Paneles disponibles')
-                ->modalWidth('md')
+                ->modalWidth('sm')
                 ->slideOver()
                 ->panels([
                     'admin',
@@ -50,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
                     'admin'    => 'heroicon-o-cog-6-tooth',
                     'docentes' => 'heroicon-o-academic-cap',
                     'alumnos'  => 'heroicon-o-user',
-                ])
+                ], asImage: false)
                 ->iconSize(15);
         });
     }

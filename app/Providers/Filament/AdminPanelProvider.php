@@ -61,7 +61,7 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-user-group'),
             ])
             ->login()
-            ->brandName('Escuela Scarso')
+            ->brandName('ATDScarso - Administración')
             // ->darkMode(true) // opcional: forzar dark; si no, respeta prefers-color-scheme
             ->colors([
                 'primary' => Color::hex('#7B1E2B'),
@@ -123,7 +123,7 @@ class AdminPanelProvider extends PanelProvider
                 BreezyCore::make()
                     ->myProfile(
                         shouldRegisterUserMenu: true, // Sets the 'account' link in the panel User Menu (default = true)
-                        userMenuLabel: 'My Profile', // Customizes the 'account' link label in the panel User Menu (default = null)
+                        userMenuLabel: 'Mi perfil', // Customizes the 'account' link label in the panel User Menu (default = null)
                         shouldRegisterNavigation: false, // Adds a main navigation item for the My Profile page (default = false)
                         navigationGroup: 'Settings', // Sets the navigation group for the My Profile page (default = null)
                         hasAvatars: true, // Enables the avatar upload form component (default = false)
@@ -134,6 +134,23 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->renderHook(
+                PanelsRenderHook::BODY_START,
+                function () {
+                    // inyecta un atributo data-panel en el body
+                    // Nota: devolvemos un pequeño script que lo coloca al cargarse
+                    return <<<HTML
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                      try {
+                        var el = document.documentElement || document.body;
+                        el.setAttribute('data-panel', 'admin');
+                      } catch(e) {}
+                    });
+                    </script>
+                    HTML;
+                }
+            );
     }
 }

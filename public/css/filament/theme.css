@@ -1,3 +1,91 @@
+/* ========================================
+   Dashboard Kit – ATDScarso
+   ======================================== */
+
+/* Light theme variables por defecto */
+:root {
+    /* Paleta por defecto (Admin-like) */
+    --scarso-primary: #d64758;
+    --scarso-secondary: #b94250;
+    --scarso-accent: #e57373;
+
+    --scarso-border: transparent;
+    --scarso-bg: #ffffff;
+    --scarso-bg2: #f9fafb;
+    --scarso-panel: #ffffff;
+    --scarso-hover: #f3f4f6;
+    --scarso-fg: #0f141a;
+    --scarso-muted: #4b5563;
+
+    /* Tonos del primario para hovers/actives (se sobreescriben por panel) */
+    --scarso-primary-600: var(--scarso-primary);
+    --scarso-primary-700: #d64758;
+    --scarso-primary-800: #d64758;
+}
+
+/* ============================
+   2) Paletas por Panel (Light)
+   Usa data-panel en <html> o <body>:
+   data-panel="admin" | "docentes" | "alumnos"
+   ============================ */
+
+/* --- ADMIN (bordó) --- */
+:root[data-panel="admin"] {
+    --scarso-primary: #d64758;
+    --scarso-primary-600: #d64758;
+    --scarso-primary-700: #d64758;
+    --scarso-primary-800: #d64758;
+
+    --scarso-secondary: #b94250;
+    --scarso-accent: #e57373;
+
+    --scarso-fg: #ffffff;
+    --scarso-muted: #4b5563;
+    --scarso-bg: #ffffff;
+    --scarso-bg2: #f9fafb;
+    --scarso-panel: transparent;
+    --scarso-border: transparent;
+    --scarso-hover: #f3f4f6;
+}
+
+/* --- DOCENTES (verde oscuro) --- */
+:root[data-panel="docentes"] {
+    --scarso-primary: #0b7d02;
+    --scarso-primary-600: #0b7d02;
+    --scarso-primary-700: #0b7d02;
+    --scarso-primary-800: #0b7d02;
+
+    --scarso-secondary: #14c45a;
+    --scarso-accent: #34d399;
+
+    --scarso-fg: #0f141a;
+    --scarso-muted: #363c42;
+    --scarso-bg: #ffffff;
+    --scarso-bg2: #f7faf7;
+    --scarso-panel: var(--scarso-secondary);
+    --scarso-border: transparent;
+    --scarso-hover: #eef7ee;
+}
+
+/* --- ALUMNOS (verde claro) --- */
+:root[data-panel="alumnos"] {
+    --scarso-primary: #6fc635;
+    --scarso-primary-600: #6fc635;
+    --scarso-primary-700: #6fc635;
+    --scarso-primary-800: #6fc635;
+
+    --scarso-secondary: #98de73;
+    --scarso-accent: #a7f3d0;
+
+    --scarso-fg: #0f141a;
+    --scarso-muted: #363c42;
+    --scarso-bg: #ffffff;
+    --scarso-bg2: #f7fbf5;
+    --scarso-panel: var(--scarso-secondary);
+    --scarso-border: transparent;
+    --scarso-hover: #eef7ea;
+}
+
 /* ====== Widget Calendarios — CSS puro ====== */
 .scarso-cal-widget {
     width: 100%;
@@ -108,17 +196,240 @@
     padding-top: 8px;
 }
 
-/* Light theme variables por defecto */
-:root {
-    --scarso-primary: #d64758;
-    --scarso-secondary: #b94250;
-    --scarso-border: #e5e7eb;
-    --scarso-bg: #ffffff;
-    --scarso-bg2: #f9fafb;
-    --scarso-panel: #ffffff;
-    --scarso-hover: #f3f4f6;
-    --scarso-fg: #000000;
-    --scarso-muted: #4b5563;
+.fi-topbar nav {
+    background: var(--scarso-bg2) !important;
+    border-bottom: 1px solid var(--scarso-border);
+}
+.fi-input {
+    background: transparent !important;
+    border-color: var(--scarso-border) !important;
+    color: var(--scarso-fg) !important;
+}
+
+/* Cards genéricas (tu dashboard/sections) */
+.fi-section {
+    background: var(--scarso-panel) !important;
+    border: 1px solid var(--scarso-border) !important;
+    border-radius: 12px;
+}
+
+/* Encabezados de widgets */
+.widget-header h2 {
+    color: var(--scarso-fg) !important;
+    font-weight: 800;
+    font-size: 30px;
+}
+.widget-header p,
+.text-muted {
+    color: var(--scarso-muted) !important;
+}
+
+/* Botón de acción principal del dashboard */
+.btn-dashboard {
+    display: inline-flex;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    background: var(--scarso-fg);
+    color: #fff;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.btn-dashboard:hover {
+    background: var(--scarso-muted);
+    transform: translateY(-1px);
+}
+.btn-dashboard:active {
+    background: var(--scarso-primary-800);
+    transform: translateY(0);
+}
+
+.grid-dashboard {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@media (min-width: 768px) {
+    .grid-dashboard {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (min-width: 1200px) {
+    .grid-dashboard {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Cards con padding consistente y contenido alineado verticalmente */
+.dashboard-card {
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* espacio uniforme entre título, lista y botón */
+}
+
+/* Variante de card neutra que usa la paleta por panel */
+.card-amber,
+.card-emerald,
+.card-slate {
+    /* Quitar colores fijos; dejamos que el panel los dicte */
+    background: #ffffff;
+    border-color: var(--scarso-border);
+}
+
+/* Títulos de cards: centrado opcional y tamaños */
+.card-title {
+    margin: 0 0 4px 0;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    color: var(--scarso-fg);
+    text-align: center; /* centrado para mejorar legibilidad */
+}
+
+/* Parrafos vacíos / mensajes */
+.text-muted {
+    text-align: center;
+}
+
+/* Listas compactas: alineación y separación suaves */
+.list-compact {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+}
+
+.list-compact li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    color: var(--scarso-fg);
+    font-size: 0.95rem;
+}
+
+/* Botón: 100% en mobile, 50% en desktop. Centrado. */
+.btn-dashboard {
+    width: 100%;
+    margin: 4px auto 0 auto;
+}
+@media (min-width: 768px) {
+    .btn-dashboard {
+        width: 60%;
+    }
+}
+@media (min-width: 1200px) {
+    .btn-dashboard {
+        width: 50%;
+    }
+}
+
+/* Encabezado del widget: centrado y mejor espaciado */
+.widget-header {
+    text-align: center;
+}
+.widget-header h2 {
+    margin-bottom: 6px;
+}
+.widget-header p {
+    margin: 0 auto;
+    max-width: 70ch;
+    margin-bottom: 30px;
+}
+
+/* Ajuste sutil del contenedor de sección para que respire mejor */
+.fi-section {
+    padding: 18px !important;
+}
+
+/* Botones “por panel”: usan el primario activo (ya definido en variables) */
+.btn-amber,
+.btn-emerald,
+.btn-slate {
+    background: var(--scarso-fg); /* contraste alto sobre panel */
+    color: #fff;
+}
+.btn-amber:hover,
+.btn-emerald:hover,
+.btn-slate:hover {
+    background: var(--scarso-muted);
+}
+
+/* Accesibilidad: foco claro en botones de dashboard */
+.btn-dashboard:focus-visible {
+    outline: 3px solid var(--scarso-primary);
+    outline-offset: 2px;
+    border-radius: 12px;
+}
+
+/* Customizando el panel switch */
+.fi-topbar .ps-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 8px;
+}
+
+.ps-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--scarso-bg2);
+    border: 1px solid var(--scarso-border);
+    border-radius: 999px;
+    padding: 4px;
+}
+
+.ps-switch a,
+.ps-switch button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--scarso-fg);
+    font-weight: 700;
+    font-size: 0.85rem;
+    line-height: 1;
+    padding: 8px 12px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease,
+        transform 0.15s ease;
+    text-decoration: none;
+}
+
+.ps-switch a:hover,
+.ps-switch button:hover {
+    background: var(--scarso-hover);
+}
+
+.ps-switch .is-active {
+    background: var(--scarso-primary);
+    color: #fff;
+    box-shadow: 0 0 0 1px var(--scarso-primary) inset;
+}
+
+.ps-switch .fi-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* En pantallas pequeñas, que no rompa el layout */
+@media (max-width: 480px) {
+    .ps-switch a,
+    .ps-switch button {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
 }
 
 /* Dark mode: hereda del esquema de Filament */
