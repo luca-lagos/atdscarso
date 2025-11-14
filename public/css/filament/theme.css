@@ -207,10 +207,86 @@
 }
 
 /* Cards genéricas (tu dashboard/sections) */
-.fi-section {
+.mini-calendar-section {
     background: var(--scarso-panel) !important;
     border: 1px solid var(--scarso-border) !important;
     border-radius: 12px;
+}
+
+/* ===== Widgets de calendario – Panel ADMIN (salas / TVs) ===== */
+
+:root[data-panel="admin"] .admin-calendar-section {
+    border-radius: 20px;
+    padding: 20px !important;
+    background: radial-gradient(circle at top left, #ffe7ea, #ffffff);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+/* Si Filament mete otra .fi-section adentro, la aplanamos */
+:root[data-panel="admin"] .admin-calendar-section .fi-section {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.admin-calendar-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.admin-calendar-header h2 {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--scarso-fg);
+    margin-bottom: 4px;
+}
+
+.admin-calendar-header p {
+    margin: 0;
+    color: var(--scarso-muted);
+    font-size: 0.85rem;
+}
+
+.admin-calendar-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-calendar-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(214, 71, 88, 0.08); /* bordó suave */
+    color: #7b1e2b;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.admin-calendar-chip--tv {
+    background: rgba(59, 130, 246, 0.08); /* azul suave */
+    color: #1d4ed8;
+}
+
+.admin-calendar-body {
+    margin-top: 8px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+    padding: 10px;
+}
+
+/* Ajuste ligero de botones de FullCalendar dentro de estos widgets */
+:root[data-panel="admin"] .admin-calendar-body .fc .fc-button {
+    border-radius: 999px !important;
+    font-size: 0.75rem;
+    padding: 4px 10px;
 }
 
 /* Encabezados de widgets */

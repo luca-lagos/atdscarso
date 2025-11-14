@@ -39,6 +39,26 @@ class TurnosSalaResource extends Resource
         return TurnosSalasTable::configure($table);
     }
 
+    public static function getModelLabel(): string
+    {
+        return 'Turno de sala';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Turnos de sala';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Turnos Sala Informática';
+    }
+
+    public static function getBreadcrumb(): string
+    {
+        return 'Turnos de sala de informática';
+    }
+
     public static function getRelations(): array
     {
         return [

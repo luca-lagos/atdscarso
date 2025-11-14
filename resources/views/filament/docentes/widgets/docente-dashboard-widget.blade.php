@@ -1,6 +1,6 @@
 <x-filament-widgets::widget>
-    <x-filament::section>
-        <div class="space-y-6">
+    <x-filament::section class="mini-calendar-section">
+        <div class="self-panel space-y-6">
             {{-- Encabezado --}}
             <div class="widget-header">
                 <h2>Bienvenido, {{ auth()->user()->name }}</h2>

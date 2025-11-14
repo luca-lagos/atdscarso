@@ -40,6 +40,26 @@ class TurnosTvResource extends Resource
         return TurnosTvsTable::configure($table);
     }
 
+    public static function getModelLabel(): string
+    {
+        return 'Turno de TV'; // singular
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Turnos de TV'; // plural
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Turnos TV'; // texto que ves en el sidebar
+    }
+
+    public static function getBreadcrumb(): string
+    {
+        return 'Turnos de TV';
+    }
+
     public static function getRelations(): array
     {
         return [

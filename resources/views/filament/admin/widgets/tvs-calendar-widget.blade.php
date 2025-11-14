@@ -1,18 +1,16 @@
 <x-filament-widgets::widget>
-    {{-- section con estilo especial solo para el calendario admin --}}
     <x-filament::section class="admin-calendar-section">
         <div class="admin-calendar-header">
             <div>
-                <h2>{{ $this->getHeading() }}</h2>
-                <p>Visualizá y gestioná todos los turnos de las salas de informática.</p>
+                <h2>Calendario de TVs</h2>
+                <p>Administrá los turnos de televisores para las aulas.</p>
             </div>
             <div class="admin-calendar-meta">
-                <span class="admin-calendar-chip">Salas de Informática</span>
+                <span class="admin-calendar-chip admin-calendar-chip--tv">Televisores</span>
             </div>
         </div>
 
         <div class="admin-calendar-body">
-            {{-- Aquí Guava Calendar inyecta el calendario automáticamente --}}
             {{ $this->calendar }}
         </div>
     </x-filament::section>

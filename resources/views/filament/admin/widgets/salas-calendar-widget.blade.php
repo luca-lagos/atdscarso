@@ -1,10 +1,10 @@
+{{-- resources/views/filament/admin/widgets/salas-calendar-widget.blade.php --}}
 <x-filament-widgets::widget>
-    {{-- section con estilo especial solo para el calendario admin --}}
     <x-filament::section class="admin-calendar-section">
         <div class="admin-calendar-header">
             <div>
-                <h2>{{ $this->getHeading() }}</h2>
-                <p>Visualizá y gestioná todos los turnos de las salas de informática.</p>
+                <h2>Calendario de salas</h2>
+                <p>Visualizá todos los turnos de las salas de informática.</p>
             </div>
             <div class="admin-calendar-meta">
                 <span class="admin-calendar-chip">Salas de Informática</span>
@@ -12,7 +12,7 @@
         </div>
 
         <div class="admin-calendar-body">
-            {{-- Aquí Guava Calendar inyecta el calendario automáticamente --}}
+            {{-- Acá va tu Guava Calendar / FullCalendar / lo que uses --}}
             {{ $this->calendar }}
         </div>
     </x-filament::section>
