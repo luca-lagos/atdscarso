@@ -27,6 +27,10 @@
                         @endforeach
                     </ul>
                 @endif
+
+                {{-- Mini calendario de préstamos --}}
+                <x-calendar-mini title="Tus préstamos del mes" :events="$eventosPrestamosAlumno" class="mt-3" />
+
                 <a class="btn-dashboard" href="{{ route('filament.alumnos.resources.prestamo_biblioteca.index') }}">
                     Ver todos
                 </a>

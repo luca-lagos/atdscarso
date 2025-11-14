@@ -2,25 +2,45 @@
 
 namespace App\Filament\Alumnos\Widgets;
 
-use Filament\Widgets\Widget;
 use App\Models\PrestamoBiblioteca;
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\DB;
 
 class AlumnoDashboardWidget extends Widget
 {
     protected string $view = 'filament.alumnos.widgets.alumno-dashboard-widget';
 
-    protected int|string|array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'full';
 
-    public function getViewData(): array
+    protected function getViewData(): array
     {
-        $user = Auth::user();
+        $user = auth()->user();
+        $hoy = Carbon::today();
+        $finMes = $hoy->copy()->endOfMonth();
+
+        // Últimos préstamos (lista top 5)
+        $prestamos = PrestamoBiblioteca::query()
+            ->where('user_id', $user->id)
+            ->orderBy('fecha_prestamo', 'desc')
+            ->limit(5)
+            ->get();
+
+        // ===== Eventos para mini-calendario (mes actual) =====
+        $eventosPrestamosAlumno = PrestamoBiblioteca::query()
+            ->where('user_id', $user->id)
+            ->whereBetween('fecha_prestamo', [$hoy->copy()->startOfMonth(), $finMes])
+            ->select(DB::raw('DATE(fecha_prestamo) as d'), DB::raw('count(*) as c'))
+            ->groupBy('d')
+            ->pluck('c', 'd')
+            ->mapWithKeys(fn($count, $date) => [
+                Carbon::parse($date)->format('Y-m-d') => $count
+            ])
+            ->toArray();
 
         return [
-            'prestamos' => PrestamoBiblioteca::where('user_id', $user->id)
-                ->latest()
-                ->limit(5)
-                ->get(),
+            'prestamos' => $prestamos,
+            'eventosPrestamosAlumno' => $eventosPrestamosAlumno,
         ];
     }
 }

@@ -432,6 +432,72 @@
     }
 }
 
+/* ===== Mini Calendar (compacto, accesible) ===== */
+.mini-cal {
+    border: 1px solid var(--scarso-border);
+    border-radius: 10px;
+    background: var(--scarso-bg);
+    padding: 10px;
+}
+.mini-cal__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.mini-cal__title {
+    font-weight: 800;
+    color: var(--scarso-fg);
+}
+.mini-cal__month {
+    color: var(--scarso-muted);
+    font-weight: 600;
+}
+.mini-cal__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+.mini-cal__dow {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--scarso-muted);
+}
+.mini-cal__cell {
+    position: relative;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--scarso-panel);
+    border: 1px solid var(--scarso-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mini-cal__cell.is-other {
+    opacity: 0.45;
+}
+.mini-cal__cell.is-today {
+    outline: 2px solid var(--scarso-primary);
+    outline-offset: 2px;
+}
+.mini-cal__day {
+    font-weight: 700;
+    color: var(--scarso-fg);
+}
+.mini-cal__badge {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: var(--scarso-primary);
+    color: #fff;
+    border-radius: 999px;
+    padding: 0 6px;
+    font-size: 0.7rem;
+    line-height: 18px;
+    height: 18px;
+}
+
 /* Dark mode: hereda del esquema de Filament */
 @media (prefers-color-scheme: dark) {
     :root {

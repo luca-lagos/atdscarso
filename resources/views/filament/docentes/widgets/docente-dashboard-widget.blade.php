@@ -27,6 +27,10 @@
                             @endforeach
                         </ul>
                     @endif
+
+                    {{-- Mini calendario de turnos de sala --}}
+                    <x-calendar-mini title="Resumen mensual" :events="$eventosSala" class="mt-3" />
+
                     <a class="btn-dashboard" href="{{ route('filament.docentes.resources.turnos-salas.index') }}">
                         Ver todos
                     </a>
@@ -50,6 +54,10 @@
                             @endforeach
                         </ul>
                     @endif
+
+                    {{-- Mini calendario de turnos de TV --}}
+                    <x-calendar-mini title="Resumen mensual" :events="$eventosTv" class="mt-3" />
+
                     <a class="btn-dashboard" href="{{ route('filament.docentes.resources.turnos-tvs.index') }}">
                         Ver todos
                     </a>
@@ -75,6 +83,10 @@
                             @endforeach
                         </ul>
                     @endif
+
+                    {{-- Mini calendario de préstamos --}}
+                    <x-calendar-mini title="Resumen mensual" :events="$eventosPrestamosDocente" class="mt-3" />
+
                     <a class="btn-dashboard"
                         href="{{ route('filament.docentes.resources.prestamo_biblioteca.index') }}">
                         Ver todos
