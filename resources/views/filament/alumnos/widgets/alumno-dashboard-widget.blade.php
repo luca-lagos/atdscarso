@@ -1,6 +1,6 @@
 <x-filament-widgets::widget>
-    <x-filament::section>
-        <div class="space-y-6">
+    <x-filament::section class="mini-calendar-section">
+        <div class="space-y-6" x-data="{ selectedDate: null }" @mini-calendar-select.window="selectedDate = $event.detail.date">
             {{-- Encabezado --}}
             <div class="widget-header">
                 <h2>Bienvenido/a, {{ auth()->user()->name }}</h2>
@@ -15,7 +15,11 @@
                 @else
                     <ul class="list-compact">
                         @foreach ($prestamos as $prestamo)
-                            <li>
+                            <li @php
+$fecha = $prestamo->fecha_prestamo instanceof \Carbon\Carbon
+                                        ? $prestamo->fecha_prestamo->toDateString()
+                                        : $prestamo->fecha_prestamo; @endphp
+                                x-show="!selectedDate || selectedDate === '{{ $fecha }}'">
                                 <span>📚</span>
                                 <span>
                                     {{ $prestamo->inventario?->titulo ?? 'Libro' }}
@@ -29,9 +33,18 @@
                 @endif
 
                 {{-- Mini calendario de préstamos --}}
-                <x-calendar-mini title="Tus préstamos del mes" :events="$eventosPrestamosAlumno" class="mt-3" />
+                <div class="mt-4">
+                    <x-calendar-mini title="Tus préstamos del mes" :events="$eventosPrestamosAlumno" class="mt-3" />
+                </div>
 
-                <a class="btn-dashboard" href="{{ route('filament.alumnos.resources.prestamo_biblioteca.index') }}">
+                {{-- Texto de contexto bajo el calendar --}}
+                <p class="mt-2 text-xs text-slate-400">
+                    Hacé clic en un día del calendario para filtrar los préstamos de esa fecha.
+                    Si no seleccionás ninguna fecha, verás los últimos movimientos.
+                </p>
+
+                <a class="btn-dashboard mt-3"
+                    href="{{ route('filament.alumnos.resources.prestamo_biblioteca.index') }}">
                     Ver todos
                 </a>
             </div>

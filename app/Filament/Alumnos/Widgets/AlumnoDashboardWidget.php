@@ -6,12 +6,16 @@ use App\Models\PrestamoBiblioteca;
 use Carbon\Carbon;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Reactive;
 
 class AlumnoDashboardWidget extends Widget
 {
     protected string $view = 'filament.alumnos.widgets.alumno-dashboard-widget';
 
     protected int | string | array $columnSpan = 'full';
+
+    #[Reactive] // Esto hace que la propiedad sea reactiva y se pueda pasar desde el padre
+    public ?string $selectedDate = null; // Definir la propiedad
 
     protected function getViewData(): array
     {

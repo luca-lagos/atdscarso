@@ -2,6 +2,8 @@
    Dashboard Kit – ATDScarso
    ======================================== */
 
+@source '../../../../vendor/bezhansalleh/filament-panel-switch/resources/views/**/*.blade.php';
+
 /* Light theme variables por defecto */
 :root {
     /* Paleta por defecto (Admin-like) */
@@ -608,4 +610,88 @@
     .scarso-card {
         /* muy sutil en light */
     }
+}
+
+/* ===== PanelSwitch – Modal estilado con el theme Scarso ===== */
+
+/* Overlay / contenido del modal */
+.fi-modal-content.panel-switch-content {
+    /* por si el plugin usa este nombre, se hereda el fondo del modal de Filament */
+}
+
+/* Contenedor de las cards de panel */
+.panel-switch-card {
+    text-decoration: none;
+}
+
+/* Card visual del panel */
+.panel-switch-card-section {
+    border-radius: 16px;
+    background: var(--scarso-primary);
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.28);
+    border: 1px solid var(--scarso-border);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: transform 0.15s ease, box-shadow 0.15s ease,
+        background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Hover: levanta un poco la card */
+.panel-switch-card:hover .panel-switch-card-section {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.4);
+    border-color: var(--scarso-secondary);
+}
+
+/* Texto del nombre del panel */
+.panel-switch-card span {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: transparent;
+}
+
+/* Texto en modo oscuro (ya venía, pero lo alineamos) */
+.dark .panel-switch-card span {
+    color: transparent;
+}
+
+/* Resaltar el panel actualmente activo si el plugin aplica ring-primary-600 */
+.panel-switch-card-section.ring-2.ring-primary-600 {
+    border-color: var(--scarso-primary);
+    box-shadow: 0 0 0 1px var(--scarso-primary);
+}
+
+/* En pantallas chicas: que las cards no se estiren demasiado */
+@media (max-width: 640px) {
+    .panel-switch-card {
+        flex: 0 0 100%;
+    }
+}
+
+.fi-topbar .panel-switch-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 6px 10px;
+    border: 1px solid var(--scarso-border);
+    background: var(--scarso-bg2);
+    color: var(--scarso-fg);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.fi-topbar .panel-switch-trigger:hover {
+    background: var(--scarso-hover);
+    transform: translateY(-1px);
+}
+
+.mini-cal__cell.is-selected {
+    outline: 2px solid var(--scarso-primary);
+    outline-offset: 2px;
 }

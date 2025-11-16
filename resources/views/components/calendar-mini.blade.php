@@ -1,10 +1,3 @@
-{{-- 
-    Componente Mini Calendario
-    Props:
-    - title: string (default: 'Calendario')
-    - events: array (formato: ['2025-11-14' => 3, '2025-11-20' => 1])
---}}
-
 @props([
     'title' => 'Calendario',
     'events' => [],
@@ -20,7 +13,12 @@
     $period = new DatePeriod($start, new DateInterval('P1D'), $end->copy()->addDay());
 @endphp
 
-<div {{ $attributes->merge(['class' => 'mini-cal']) }} style="--mini-cal-accent: var(--scarso-primary);">
+<div {{ $attributes->merge(['class' => 'mini-cal']) }} style="--mini-cal-accent: var(--scarso-primary);"
+    x-data="{
+        get selectedDate() {
+            return this.$el.closest('[x-data]').__x.$data.selectedDate
+        }
+    }">
     <div class="mini-cal__header">
         <span class="mini-cal__title">{{ $title }}</span>
         <span class="mini-cal__month">{{ $today->translatedFormat('F Y') }}</span>
@@ -33,7 +31,6 @@
 
         @foreach ($period as $date)
             @php
-                // Convertir DateTime a Carbon
                 $cDate = Carbon::instance($date);
                 $iso = $cDate->format('Y-m-d');
                 $count = $events[$iso] ?? 0;
@@ -41,12 +38,15 @@
                 $isOtherMonth = $cDate->month !== $today->month;
             @endphp
 
-            <div class="mini-cal__cell {{ $isOtherMonth ? 'is-other' : '' }} {{ $isToday ? 'is-today' : '' }}">
+            <button type="button"
+                class="mini-cal__cell {{ $isOtherMonth ? 'is-other' : '' }} {{ $isToday ? 'is-today' : '' }}"
+                :class="{ 'is-selected': selectedDate === '{{ $iso }}' }" data-date="{{ $iso }}"
+                @click="$dispatch('mini-calendar-select', { date: '{{ $iso }}' })">
                 <div class="mini-cal__day">{{ $cDate->day }}</div>
                 @if ($count > 0)
                     <span class="mini-cal__badge">{{ $count }}</span>
                 @endif
-            </div>
+            </button>
         @endforeach
     </div>
 </div>
