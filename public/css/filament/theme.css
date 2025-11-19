@@ -205,7 +205,6 @@
 .fi-input {
     background: transparent !important;
     border-color: var(--scarso-border) !important;
-    color: var(--scarso-fg) !important;
 }
 
 /* Cards genéricas (tu dashboard/sections) */
@@ -576,6 +575,36 @@
     height: 18px;
 }
 
+/* Base para día seleccionado */
+.mini-cal__cell.is-selected {
+    color: #f9fafb;
+    box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.9);
+}
+
+/* Sala: verde oscuro */
+.mini-cal__cell .mini-cal__cell--scope-sala.is-selected {
+    background: linear-gradient(135deg, #065f46, #16a34a);
+    border-color: #16a34a;
+}
+
+/* TV: amarillo / ámbar */
+.mini-cal__cell .mini-cal__cell--scope-tv.is-selected {
+    background: linear-gradient(135deg, #92400e, #f59e0b);
+    border-color: #f59e0b;
+}
+
+/* Biblioteca: rojo/bordó */
+.mini-cal__cell .mini-cal__cell--scope-bib.is-selected {
+    background: linear-gradient(135deg, #7f1d1d, #ef4444);
+    border-color: #ef4444;
+}
+
+/* Badge dentro del día seleccionado: que contraste */
+.mini-cal__cell.is-selected .mini-cal__badge {
+    background: rgba(15, 23, 42, 0.8);
+    color: #e5e7eb;
+}
+
 /* Dark mode: hereda del esquema de Filament */
 @media (prefers-color-scheme: dark) {
     :root {
@@ -691,7 +720,7 @@
     transform: translateY(-1px);
 }
 
-.mini-cal__cell.is-selected {
+/*.mini-cal__cell.is-selected {
     outline: 2px solid var(--scarso-primary);
     outline-offset: 2px;
-}
+}*/

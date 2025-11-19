@@ -1,6 +1,7 @@
 @props([
     'title' => 'Calendario',
     'events' => [],
+    'scope' => null, // 'sala', 'tv', 'bib', etc.
 ])
 
 @php
@@ -13,12 +14,7 @@
     $period = new DatePeriod($start, new DateInterval('P1D'), $end->copy()->addDay());
 @endphp
 
-<div {{ $attributes->merge(['class' => 'mini-cal']) }} style="--mini-cal-accent: var(--scarso-primary);"
-    x-data="{
-        get selectedDate() {
-            return this.$el.closest('[x-data]').__x.$data.selectedDate
-        }
-    }">
+<div {{ $attributes->merge(['class' => 'mini-cal']) }} style="--mini-cal-accent: var(--scarso-primary);">
     <div class="mini-cal__header">
         <span class="mini-cal__title">{{ $title }}</span>
         <span class="mini-cal__month">{{ $today->translatedFormat('F Y') }}</span>
@@ -39,9 +35,19 @@
             @endphp
 
             <button type="button"
-                class="mini-cal__cell {{ $isOtherMonth ? 'is-other' : '' }} {{ $isToday ? 'is-today' : '' }}"
-                :class="{ 'is-selected': selectedDate === '{{ $iso }}' }" data-date="{{ $iso }}"
-                @click="$dispatch('mini-calendar-select', { date: '{{ $iso }}' })">
+                class="mini-cal__cell mini-cal__cell--scope-{{ $scope }} {{ $isOtherMonth ? 'is-other' : '' }} {{ $isToday ? 'is-today' : '' }}"
+                data-date="{{ $iso }}" data-scope="{{ $scope }}"
+                @click="$dispatch('mini-calendar-select', { date: '{{ $iso }}', scope: '{{ $scope }}' })"
+                x-data="{
+                    get isSelected() {
+                        const data = this.$root.closest('[x-data]')?.__x?.$data
+                        if (!data) return false
+                        if ('{{ $scope }}' === 'sala') return data.selectedSalaDate === '{{ $iso }}'
+                        if ('{{ $scope }}' === 'tv') return data.selectedTvDate === '{{ $iso }}'
+                        if ('{{ $scope }}' === 'bib') return data.selectedBibDate === '{{ $iso }}'
+                        return false
+                    }
+                }" :class="{ 'is-selected': isSelected }">
                 <div class="mini-cal__day">{{ $cDate->day }}</div>
                 @if ($count > 0)
                     <span class="mini-cal__badge">{{ $count }}</span>
