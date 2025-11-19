@@ -1,7 +1,8 @@
 @props([
     'title' => 'Calendario',
     'events' => [],
-    'scope' => null, // 'sala', 'tv', 'bib', etc.
+    'scope' => null, // 'sala', 'tv', 'bib', null (alumnos)
+    'selectedVar' => null, // nombre de la variable Alpine del padre
 ])
 
 @php
@@ -14,7 +15,7 @@
     $period = new DatePeriod($start, new DateInterval('P1D'), $end->copy()->addDay());
 @endphp
 
-<div {{ $attributes->merge(['class' => 'mini-cal']) }} style="--mini-cal-accent: var(--scarso-primary);">
+<div {{ $attributes->merge(['class' => 'mini-cal']) }}>
     <div class="mini-cal__header">
         <span class="mini-cal__title">{{ $title }}</span>
         <span class="mini-cal__month">{{ $today->translatedFormat('F Y') }}</span>
@@ -35,19 +36,30 @@
             @endphp
 
             <button type="button"
-                class="mini-cal__cell mini-cal__cell--scope-{{ $scope }} {{ $isOtherMonth ? 'is-other' : '' }} {{ $isToday ? 'is-today' : '' }}"
+                class="mini-cal__cell {{ $isOtherMonth ? 'is-other' : '' }} {{ $isToday ? 'is-today' : '' }}"
                 data-date="{{ $iso }}" data-scope="{{ $scope }}"
                 @click="$dispatch('mini-calendar-select', { date: '{{ $iso }}', scope: '{{ $scope }}' })"
-                x-data="{
-                    get isSelected() {
-                        const data = this.$root.closest('[x-data]')?.__x?.$data
-                        if (!data) return false
-                        if ('{{ $scope }}' === 'sala') return data.selectedSalaDate === '{{ $iso }}'
-                        if ('{{ $scope }}' === 'tv') return data.selectedTvDate === '{{ $iso }}'
-                        if ('{{ $scope }}' === 'bib') return data.selectedBibDate === '{{ $iso }}'
-                        return false
-                    }
-                }" :class="{ 'is-selected': isSelected }">
+                x-bind:class="[
+                    'mini-cal__cell',
+                    '{{ $isOtherMonth ? 'is-other' : '' }}',
+                    '{{ $isToday ? 'is-today' : '' }}',
+                    ({{ $selectedVar ?: 'null' }} === '{{ $iso }}') ?
+                    (
+                        '{{ $scope }}'
+                        === 'sala' ?
+                        'mini-cal__cell--selected-sala' :
+                        ('{{ $scope }}'
+                            === 'tv' ?
+                            'mini-cal__cell--selected-tv' :
+                            ('{{ $scope }}'
+                                === 'bib' ?
+                                'mini-cal__cell--selected-bib' :
+                                'mini-cal__cell--selected'
+                            )
+                        )
+                    ) :
+                    ''
+                ].join(' ')">
                 <div class="mini-cal__day">{{ $cDate->day }}</div>
                 @if ($count > 0)
                     <span class="mini-cal__badge">{{ $count }}</span>

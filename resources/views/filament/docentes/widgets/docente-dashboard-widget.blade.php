@@ -61,7 +61,8 @@
 
                     {{-- Mini calendario de turnos de sala --}}
                     <div class="mt-4">
-                        <x-calendar-mini title="Resumen mensual" :events="$eventosSala" scope="sala" class="mt-3" />
+                        <x-calendar-mini title="Resumen mensual" :events="$eventosSala" scope="sala" class="mt-3"
+                            selected-var="selectedSalaDate" />
                     </div>
 
                     <a class="btn-dashboard mt-3" href="{{ route('filament.docentes.resources.turnos-salas.index') }}">
@@ -94,7 +95,11 @@
                                     <span>📺</span>
                                     <span>
                                         {{ $tv->inventario->nombre_equipo ?? 'TV' }} •
-                                        {{ \Carbon\Carbon::parse($tv->fecha_turno)->format('d/m H:i') }}
+                                        {{ \Carbon\Carbon::parse($tv->fecha_turno)->format('d/m') }}
+                                        @if ($tv->hora_inicio && $tv->hora_fin)
+                                            ·
+                                            {{ \Carbon\Carbon::parse($tv->hora_inicio)->format('H:i') }}‑{{ \Carbon\Carbon::parse($tv->hora_fin)->format('H:i') }}
+                                        @endif
                                     </span>
                                 </li>
                             @endforeach
@@ -103,7 +108,8 @@
 
                     {{-- Mini calendario de turnos de TV --}}
                     <div class="mt-4">
-                        <x-calendar-mini title="Resumen mensual" :events="$eventosTv" scope="tv" class="mt-3" />
+                        <x-calendar-mini title="Resumen mensual" :events="$eventosTv" scope="tv" class="mt-3"
+                            selected-var="selectedTvDate" />
                     </div>
 
                     <a class="btn-dashboard mt-3" href="{{ route('filament.docentes.resources.turnos-tvs.index') }}">
@@ -147,7 +153,8 @@
 
                     {{-- Mini calendario de préstamos --}}
                     <div class="mt-4">
-                        <x-calendar-mini title="Resumen mensual" :events="$eventosPrestamosDocente" scope="bib" class="mt-3" />
+                        <x-calendar-mini title="Resumen mensual" :events="$eventosPrestamosDocente" scope="bib" class="mt-3"
+                            selected-var="selectedBibDate" />
                     </div>
 
                     <a class="btn-dashboard mt-3"
