@@ -32,7 +32,7 @@
                     </h3>
 
                     @if ($turnosSala->isEmpty())
-                        <p class="text-muted">No tenés turnos próximos.</p>
+                        <p class="text-muted" style="color: black">No tenés turnos próximos.</p>
                     @else
                         <ul class="list-compact" x-ref="listaSala">
                             @foreach ($turnosSala as $turno)
@@ -53,10 +53,7 @@
                             @endforeach
                         </ul>
 
-                        <p class="mt-1 text-x" style="color: black"
-                            x-show="selectedSalaDate && !$refs.listaSala.querySelector('li[style*=\"display: none\"]') && !$refs.listaSala.querySelector('li:not([style*=\"display: none\"])')">
-                            No hay turnos para la fecha seleccionada.
-                        </p>
+
                     @endif
 
                     {{-- Mini calendario de turnos de sala --}}

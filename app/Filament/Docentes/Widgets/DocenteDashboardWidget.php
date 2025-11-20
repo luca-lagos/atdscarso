@@ -25,6 +25,7 @@ class DocenteDashboardWidget extends Widget
         $turnosSala = Turnos_sala::query()
             ->where('user_id', $user->id)
             ->where('fecha_turno', '>=', $hoy)
+            ->where('estado', 'activo')
             ->orderBy('fecha_turno')
             ->orderBy('hora_inicio')
             ->limit(5)
@@ -34,6 +35,7 @@ class DocenteDashboardWidget extends Widget
         $turnosTv = Turnos_tv::query()
             ->where('user_id', $user->id)
             ->where('fecha_turno', '>=', $hoy)
+            ->where('estado', 'activo')
             ->orderBy('fecha_turno')
             ->orderBy('hora_inicio')
             ->limit(5)
@@ -42,6 +44,7 @@ class DocenteDashboardWidget extends Widget
         // Últimos préstamos de biblioteca (lista top 5)
         $prestamosBiblioteca = PrestamoBiblioteca::query()
             ->where('user_id', $user->id)
+            ->where('estado', 'activo')
             ->orderBy('fecha_prestamo', 'desc')
             ->limit(5)
             ->get();
