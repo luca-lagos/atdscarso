@@ -54,6 +54,7 @@ class DocenteDashboardWidget extends Widget
         // Turnos de Sala: agrupados por fecha
         $eventosSala = Turnos_sala::query()
             ->where('user_id', $user->id)
+            ->where('estado', 'activo')
             ->whereBetween('fecha_turno', [$hoy->copy()->startOfMonth(), $finMes])
             ->select(DB::raw('DATE(fecha_turno) as d'), DB::raw('count(*) as c'))
             ->groupBy('d')
@@ -66,7 +67,9 @@ class DocenteDashboardWidget extends Widget
         // Turnos de TV: agrupados por fecha
         $eventosTv = Turnos_tv::query()
             ->where('user_id', $user->id)
-            ->whereBetween('fecha_turno', [$hoy->copy()->startOfMonth(), $finMes])
+            ->where('estado', 'activo')
+            ->whereBetween('fecha_turno', [$hoy->copy()
+                ->startOfMonth(), $finMes])
             ->select(DB::raw('DATE(fecha_turno) as d'), DB::raw('count(*) as c'))
             ->groupBy('d')
             ->pluck('c', 'd')
@@ -78,6 +81,7 @@ class DocenteDashboardWidget extends Widget
         // Préstamos de Biblioteca: agrupados por fecha de préstamo
         $eventosPrestamosDocente = PrestamoBiblioteca::query()
             ->where('user_id', $user->id)
+            ->where('estado', 'activo')
             ->whereBetween('fecha_prestamo', [$hoy->copy()->startOfMonth(), $finMes])
             ->select(DB::raw('DATE(fecha_prestamo) as d'), DB::raw('count(*) as c'))
             ->groupBy('d')

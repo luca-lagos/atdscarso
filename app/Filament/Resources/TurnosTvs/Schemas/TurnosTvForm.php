@@ -119,7 +119,7 @@ class TurnosTvForm
                                 ->label('Fecha')
                                 ->required()
                                 ->native(false)
-                                ->minDate(today()), // opcional: evitar fechas pasadas
+                                ->minDate(fn($operation) => $operation === 'create' ? today() : null),
                         ]),
 
                         // Fila 3: Horario

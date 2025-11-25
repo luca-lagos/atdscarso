@@ -26,6 +26,7 @@ class AlumnoDashboardWidget extends Widget
         // Últimos préstamos (lista top 5)
         $prestamos = PrestamoBiblioteca::query()
             ->where('user_id', $user->id)
+            ->where('estado', 'activo')
             ->orderBy('fecha_prestamo', 'desc')
             ->limit(5)
             ->get();

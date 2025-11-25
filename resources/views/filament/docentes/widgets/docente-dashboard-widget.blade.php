@@ -53,7 +53,11 @@
                             @endforeach
                         </ul>
 
-
+                        {{-- Mensaje cuando hay turnos pero no para el día seleccionado --}}
+                        <p class="mt-1 text-xs" style="color: black"
+                            x-show="selectedSalaDate && !$refs.listaSala.querySelector('li:not([style*=\"display: none\"])')">
+                            No hay turnos para la fecha seleccionada.
+                        </p>
                     @endif
 
                     {{-- Mini calendario de turnos de sala --}}
@@ -79,7 +83,7 @@
                     @if ($turnosTv->isEmpty())
                         <p class="text-muted">No tenés turnos próximos.</p>
                     @else
-                        <ul class="list-compact">
+                        <ul class="list-compact" x-ref="listaTv">
                             @foreach ($turnosTv as $tv)
                                 @php
                                     $fechaTv =
@@ -101,6 +105,12 @@
                                 </li>
                             @endforeach
                         </ul>
+
+                        {{-- Mensaje cuando hay turnos pero no para el día seleccionado --}}
+                        <p class="mt-1 text-xs text-slate-300"
+                            x-show="selectedTvDate && !$refs.listaTv.querySelector('li:not([style*=\"display: none\"])')">
+                            No hay turnos de TV para la fecha seleccionada.
+                        </p>
                     @endif
 
                     {{-- Mini calendario de turnos de TV --}}
@@ -126,7 +136,7 @@
                     @if ($prestamosBiblioteca->isEmpty())
                         <p class="text-muted">No registrás préstamos recientes.</p>
                     @else
-                        <ul class="list-compact">
+                        <ul class="list-compact" x-ref="listaBib">
                             @foreach ($prestamosBiblioteca as $prestamo)
                                 @php
                                     $fechaBib =
@@ -146,6 +156,12 @@
                                 </li>
                             @endforeach
                         </ul>
+
+                        {{-- Mensaje cuando hay préstamos pero no para el día seleccionado --}}
+                        <p class="mt-1 text-xs text-slate-300"
+                            x-show="selectedBibDate && !$refs.listaBib.querySelector('li:not([style*=\"display: none\"])')">
+                            No hay préstamos de biblioteca para la fecha seleccionada.
+                        </p>
                     @endif
 
                     {{-- Mini calendario de préstamos --}}

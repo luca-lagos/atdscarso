@@ -19,6 +19,7 @@ class Turnos_sala extends Model implements Eventable
         'hora_fin',
         'tipo',
         'observaciones',
+        'estado',
     ];
 
     protected $casts = [

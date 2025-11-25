@@ -12,8 +12,6 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Builder;
-use Closure;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -27,10 +25,10 @@ class TurnosSalaForm
                     ->description('Asigná profesor, curso y horario para la sala.')
                     ->icon('heroicon-m-calendar-days')
                     ->schema([
-                        // Fila 1: Profesor + Tipo
+                        // Fila 1: Profesor + Tipo + Estado
                         Grid::make()->columns([
                             'default' => 1,
-                            'md' => 2,
+                            'md' => 3,
                         ])->schema([
                             Select::make('user_id')
                                 ->label('Usuario')
@@ -62,7 +60,6 @@ class TurnosSalaForm
                                         ->required()
                                         ->minLength(6),
 
-                                    // ✅ Ahora el rol viene desde la tabla "roles"
                                     Select::make('role_id')
                                         ->label('Rol')
                                         ->options(
@@ -104,6 +101,37 @@ class TurnosSalaForm
                                 ])
                                 ->required()
                                 ->native(false),
+
+                            Select::make('estado')
+                                ->label('Estado')
+                                ->options([
+                                    'activo'    => 'Activo',
+                                    'pendiente' => 'Pendiente',
+                                    'cancelado' => 'Cancelado',
+                                ])
+                                ->default(fn($get) => function () use ($get) {
+                                    $userId = $get('user_id');
+                                    if (! $userId) {
+                                        return 'pendiente';
+                                    }
+
+                                    $user = User::find($userId);
+                                    if (! $user) {
+                                        return 'pendiente';
+                                    }
+
+                                    if ($user->hasRole('profesor')) {
+                                        return 'activo';
+                                    }
+
+                                    if ($user->hasRole('alumno')) {
+                                        return 'pendiente';
+                                    }
+
+                                    return 'pendiente';
+                                })
+                                ->native(false)
+                                ->required(),
                         ]),
 
                         // Fila 2: Curso / División
@@ -130,7 +158,7 @@ class TurnosSalaForm
                                 ->label('Fecha')
                                 ->required()
                                 ->native(false)
-                                ->minDate(today()), // evita fechas pasadas si querés
+                                ->minDate(fn($operation) => $operation === 'create' ? today() : null),
                         ]),
 
                         // Fila 4: Horario

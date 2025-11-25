@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 
+
 class TurnosSalasTable
 {
     public static function configure(Table $table): Table
@@ -76,6 +77,18 @@ class TurnosSalasTable
                     ->formatStateUsing(fn(string $state) => ucfirst($state))
                     ->toggleable(),
 
+                // 🔹 NUEVO: Estado
+                TextColumn::make('estado')
+                    ->label('Estado')
+                    ->badge()
+                    ->colors([
+                        'success' => 'activo',
+                        'warning' => 'pendiente',
+                        'danger'  => 'cancelado',
+                    ])
+                    ->formatStateUsing(fn(string $state) => ucfirst($state))
+                    ->sortable(),
+
                 TextColumn::make('created_at')
                     ->label('Creado')
                     ->since()
@@ -83,28 +96,36 @@ class TurnosSalasTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // Hoy
                 Filter::make('hoy')
                     ->label('Hoy')
                     ->query(fn(Builder $q) => $q->whereDate('fecha_turno', today()))
                     ->toggle()
                     ->indicateUsing(fn(): array => ['Hoy']),
 
-                // Esta semana
                 Filter::make('semana')
                     ->label('Esta semana')
                     ->query(fn(Builder $q) => $q->whereBetween('fecha_turno', [now()->startOfWeek(), now()->endOfWeek()]))
                     ->toggle()
                     ->indicateUsing(fn(): array => ['Semana actual']),
 
-                // Por profesor
                 SelectFilter::make('user_id')
                     ->label('Profesor')
                     ->relationship('user', 'name')
                     ->searchable()
                     ->preload(),
 
-                // Rango de fechas (schema en v4)
+                // 🔹 NUEVO: filtro por estado
+                SelectFilter::make('estado')
+                    ->label('Estado')
+                    ->options([
+                        'activo'    => 'Activo',
+                        'pendiente' => 'Pendiente',
+                        'cancelado' => 'Cancelado',
+                    ])
+                    ->multiple()
+                    ->indicator('Estado'),
+
+                // Rango de fechas
                 Filter::make('rango_fechas')
                     ->label('Rango de fechas')
                     ->schema([
@@ -119,7 +140,6 @@ class TurnosSalasTable
                             ]);
                         }
 
-                        // Si solo uno está presente, aplicar filtro individual
                         return $query
                             ->when(
                                 $data['desde'] ?? null,

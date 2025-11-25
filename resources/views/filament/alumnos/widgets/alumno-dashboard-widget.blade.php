@@ -4,7 +4,6 @@
             selectedDate: null,
         }"
             @mini-calendar-select.window="
-                // Para alumnos no usamos scope, tomamos siempre la fecha
                 selectedDate = $event.detail.date
             ">
             {{-- Encabezado --}}
@@ -49,10 +48,7 @@
 
                     {{-- Mensaje si no hay préstamos para la fecha seleccionada --}}
                     <p class="mt-1 text-xs text-slate-500"
-                        x-show="
-                            selectedDate
-                            && !$refs.listaAlu.querySelector('li[x-show]:not([style*=\"display: none\"])')
-                        ">
+                        x-show="selectedDate && !$refs.listaAlu.querySelector('li:not([style*=\"display: none\"])')">
                         No tenés préstamos registrados para la fecha seleccionada.
                     </p>
                 @endif
