@@ -4,6 +4,26 @@
             selectedSalaDate: null,
             selectedTvDate: null,
             selectedBibDate: null,
+            visibleSalaCount: 0,
+            visibleTvCount: 0,
+            visibleBibCount: 0,
+            updateVisibleCounts() {
+                // Sala
+                if (this.$refs.listaSala) {
+                    this.visibleSalaCount = Array.from(this.$refs.listaSala.querySelectorAll('li'))
+                        .filter(li => li.offsetParent !== null).length;
+                }
+                // TV
+                if (this.$refs.listaTv) {
+                    this.visibleTvCount = Array.from(this.$refs.listaTv.querySelectorAll('li'))
+                        .filter(li => li.offsetParent !== null).length;
+                }
+                // Biblioteca
+                if (this.$refs.listaBib) {
+                    this.visibleBibCount = Array.from(this.$refs.listaBib.querySelectorAll('li'))
+                        .filter(li => li.offsetParent !== null).length;
+                }
+            }
         }"
             @mini-calendar-select.window="
                 if ($event.detail.scope === 'sala') {
@@ -13,7 +33,10 @@
                 } else if ($event.detail.scope === 'bib') {
                     selectedBibDate = $event.detail.date
                 }
-            ">
+                // Actualizamos los contadores después de cambiar la fecha
+                $nextTick(() => updateVisibleCounts())
+            "
+            x-init="$nextTick(() => updateVisibleCounts())">
             {{-- Encabezado --}}
             <div class="widget-header">
                 <h2>Bienvenido, {{ auth()->user()->name }}</h2>
@@ -55,7 +78,7 @@
 
                         {{-- Mensaje cuando hay turnos pero no para el día seleccionado --}}
                         <p class="mt-1 text-xs" style="color: black"
-                            x-show="selectedSalaDate && !$refs.listaSala.querySelector('li:not([style*=\"display: none\"])')">
+                            x-show="selectedSalaDate && visibleSalaCount === 0">
                             No hay turnos para la fecha seleccionada.
                         </p>
                     @endif
@@ -107,8 +130,8 @@
                         </ul>
 
                         {{-- Mensaje cuando hay turnos pero no para el día seleccionado --}}
-                        <p class="mt-1 text-xs text-slate-300"
-                            x-show="selectedTvDate && !$refs.listaTv.querySelector('li:not([style*=\"display: none\"])')">
+                        <p class="mt-1 text-xs text-slate-300" x-show="selectedTvDate && visibleTvCount === 0"
+                            style="color: black">
                             No hay turnos de TV para la fecha seleccionada.
                         </p>
                     @endif
@@ -158,8 +181,8 @@
                         </ul>
 
                         {{-- Mensaje cuando hay préstamos pero no para el día seleccionado --}}
-                        <p class="mt-1 text-xs text-slate-300"
-                            x-show="selectedBibDate && !$refs.listaBib.querySelector('li:not([style*=\"display: none\"])')">
+                        <p class="mt-1 text-xs text-slate-300" x-show="selectedBibDate && visibleBibCount === 0"
+                            style="color: black">
                             No hay préstamos de biblioteca para la fecha seleccionada.
                         </p>
                     @endif
