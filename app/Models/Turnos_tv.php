@@ -42,8 +42,8 @@ class Turnos_tv extends Model implements Eventable
             ->title(($this->inventario?->nombre_equipo ?? 'TV') . ' - ' . ($this->user?->nombre_completo ?? ''))
             ->start($this->fecha_turno->toDateString() . ' ' . $this->hora_inicio->format('H:i'))
             ->end($this->fecha_turno->toDateString() . ' ' . $this->hora_fin->format('H:i'));
-            // Opcional: ->backgroundColor('#2563eb')->textColor('#fff')
-            // Opcional: ->action('edit') para que el click abra editar directamente
+        // Opcional: ->backgroundColor('#2563eb')->textColor('#fff')
+        // Opcional: ->action('edit') para que el click abra editar directamente
     }
 
     public function isActivo()
@@ -101,8 +101,14 @@ class Turnos_tv extends Model implements Eventable
         return $query->where('user_id', $userId);
     }
 
+    public function scopeVencido($query)
+    {
+        // Turnos cuya fecha + hora_fin ya pasó
+        return $query->whereRaw("CONCAT(fecha_turno::text, ' ', hora_fin::text)::timestamp < NOW()");
+    }
+
     // App/Models/TurnosTv.php
-/*public function overlaps($fecha, $horaInicio, $horaFin)
+    /*public function overlaps($fecha, $horaInicio, $horaFin)
 {
     return self::where('inventario_id', $this->inventario_id)
         ->where('fecha_turno', $fecha)

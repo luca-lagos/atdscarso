@@ -75,4 +75,20 @@ class Turnos_sala extends Model implements Eventable
     {
         return $query->where('user_id', $userId);
     }
+
+    public function isFinalizado()
+    {
+        return $this->estado === 'finalizado';
+    }
+
+    public function scopeFinalizado($query)
+    {
+        return $query->where('estado', 'finalizado');
+    }
+
+    public function scopeVencido($query)
+    {
+        // Turnos cuya fecha + hora_fin ya pasó
+        return $query->whereRaw("CONCAT(fecha_turno::text, ' ', hora_fin::text)::timestamp < NOW()");
+    }
 }
