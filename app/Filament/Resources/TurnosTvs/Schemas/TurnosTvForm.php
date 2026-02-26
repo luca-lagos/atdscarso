@@ -155,6 +155,7 @@ class TurnosTvForm
                         Grid::make()->columns(1)->schema([
                             Select::make('estado')
                                 ->label('Estado')
+                                ->visibleOn('edit')
                                 ->options([
                                     'activo'     => 'Activo',
                                     'confirmado' => 'Confirmado',
@@ -162,7 +163,8 @@ class TurnosTvForm
                                     'finalizado' => 'Finalizado',
                                 ])
                                 ->default('activo')
-                                ->native(false),
+                                ->native(false)
+                                ->required(),
                         ]),
                     ])->columnSpanFull(),
 
