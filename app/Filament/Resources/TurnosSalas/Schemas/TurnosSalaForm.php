@@ -104,10 +104,12 @@ class TurnosSalaForm
 
                             Select::make('estado')
                                 ->label('Estado')
+                                ->visibleOn('edit')
                                 ->options([
                                     'activo'    => 'Activo',
                                     'pendiente' => 'Pendiente',
                                     'cancelado' => 'Cancelado',
+                                    'finalizado' => 'Finalizado',
                                 ])
                                 ->default(fn($get) => function () use ($get) {
                                     $userId = $get('user_id');
